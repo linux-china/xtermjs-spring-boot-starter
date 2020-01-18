@@ -1,5 +1,6 @@
 xtermjs-spring-boot-starter
 ===========================
+[![Build Status](https://api.travis-ci.com/linux-china/xtermjs-spring-boot-starter.svg?branch=master)](https://travis-ci.com/linux-china/xtermjs-spring-boot-starter)
 Integrate xterm for Spring Boot with Xterm.js & Spring Shell
 
 # Why terminal in browser?
@@ -35,3 +36,4 @@ spring.rsocket.server.transport=websocket
 
 * Help: Spring Shell help
 * exit/quit: close window/tab of terminal
+* system: display system information

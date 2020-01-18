@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.mvnsearch.boot.xtermjs.XtermjsAutoConfiguration
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+org.mvnsearch.boot.xtermjs.SpringShellExclusionFilter

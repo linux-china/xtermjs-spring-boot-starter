@@ -1,0 +1,55 @@
+{
+  "name": "xtermjs-rsocket",
+  "version": "0.1.0",
+  "description": "Xterm.js with RSocket as backend",
+  "homepage": "https://github.com/linux-china/xtermjs-spring-boot-starter",
+  "keywords": [
+    "Xtermjs",
+    "RSocket",
+    "Spring-Boot",
+    "Spring-Shell"
+  ],
+  "author": {
+    "name": "linux_china",
+    "email": "libing.chen@gmail.com",
+    "url": "https://twitter.com/linux_china"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linux-china/xtermjs-spring-boot-starter.git"
+  },
+  "license": "Apache License",
+  "scripts": {
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --open",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "fbjs": "^1.0.0",
+    "rsocket-core": "^0.0.18",
+    "rsocket-flowable": "^0.0.14",
+    "rsocket-tcp-client": "^0.0.18",
+    "rsocket-tcp-server": "^0.0.18",
+    "rsocket-types": "^0.0.16",
+    "rsocket-websocket-client": "^0.0.18",
+    "ws": "^5.2.1",
+    "xterm": "^4.3.0",
+    "xterm-addon-fit": "^0.3.0",
+    "xterm-addon-web-links": "^0.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.4.1",
+    "file-loader": "^5.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^1.1.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  }
+}

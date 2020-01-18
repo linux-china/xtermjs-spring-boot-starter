@@ -24,6 +24,11 @@ public class XtermjsAutoConfiguration {
     }
 
     @Bean
+    public SpringBootStandardCommands springBootStandardCommands() {
+        return new SpringBootStandardCommands();
+    }
+
+    @Bean
     public XtermRSocketController xtermRSocketController() {
         return new XtermRSocketController();
     }

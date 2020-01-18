@@ -22,6 +22,8 @@ public class SpringBootStandardCommands {
         List<String> lines = new ArrayList<>();
         lines.add("Started Time: " + startedTime);
         lines.add("Java Version: " + System.getProperty("java.version"));
+        lines.add("OS Name: " + System.getProperty("os.name"));
+        lines.add("OS Version: " + System.getProperty("os.version"));
         return String.join("\n", lines);
     }
 }

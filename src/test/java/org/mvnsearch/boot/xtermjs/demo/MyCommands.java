@@ -12,21 +12,24 @@ import org.springframework.shell.standard.ShellMethod;
  */
 @ShellComponent
 public class MyCommands {
-    private static AttributedStyle RED_FONT_STYLE = AttributedStyle.DEFAULT.foreground(AttributedStyle.RED);
-    private static AttributedStyle GREEN_FONT_STYLE = AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN);
 
-    @ShellMethod("Add two integers together.")
-    public int add(int a, int b) {
-        return a + b;
-    }
+	private static AttributedStyle RED_FONT_STYLE = AttributedStyle.DEFAULT.foreground(AttributedStyle.RED);
 
-    @ShellMethod("Minus two integers together.")
-    public int minus(int a, int b) {
-        return a - b;
-    }
+	private static AttributedStyle GREEN_FONT_STYLE = AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN);
 
-    @ShellMethod("Display information.")
-    public AttributedString info() {
-        return new AttributedString("Xterm with RSocket! http://rsocket.io ", GREEN_FONT_STYLE);
-    }
+	@ShellMethod("Add two integers together.")
+	public int add(int a, int b) {
+		return a + b;
+	}
+
+	@ShellMethod("Minus two integers together.")
+	public int minus(int a, int b) {
+		return a - b;
+	}
+
+	@ShellMethod("Display information.")
+	public AttributedString info() {
+		return new AttributedString("Xterm with RSocket! http://rsocket.io ", GREEN_FONT_STYLE);
+	}
+
 }

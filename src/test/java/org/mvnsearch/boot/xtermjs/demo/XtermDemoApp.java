@@ -10,7 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class XtermDemoApp {
-    public static void main(String[] args) {
-        SpringApplication.run(XtermDemoApp.class, args);
-    }
+
+	public static void main(String[] args) {
+		SpringApplication.run(XtermDemoApp.class, args);
+	}
+
 }

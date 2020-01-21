@@ -15,15 +15,17 @@ import java.util.List;
  */
 @ShellComponent
 public class SpringBootStandardCommands {
-    private String startedTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSS'Z'").format(new Date());
 
-    @ShellMethod("Display application info")
-    public String system() {
-        List<String> lines = new ArrayList<>();
-        lines.add("Started Time: " + startedTime);
-        lines.add("Java Version: " + System.getProperty("java.version"));
-        lines.add("OS Name: " + System.getProperty("os.name"));
-        lines.add("OS Version: " + System.getProperty("os.version"));
-        return String.join("\n", lines);
-    }
+	private String startedTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSS'Z'").format(new Date());
+
+	@ShellMethod("Display application info")
+	public String system() {
+		List<String> lines = new ArrayList<>();
+		lines.add("Started Time: " + startedTime);
+		lines.add("Java Version: " + System.getProperty("java.version"));
+		lines.add("OS Name: " + System.getProperty("os.name"));
+		lines.add("OS Version: " + System.getProperty("os.version"));
+		return String.join("\n", lines);
+	}
+
 }

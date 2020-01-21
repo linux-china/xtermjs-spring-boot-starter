@@ -16,20 +16,22 @@ import java.util.List;
  */
 @Configuration
 public class XtermjsAutoConfiguration {
-    private Logger log = LoggerFactory.getLogger(XtermjsAutoConfiguration.class);
 
-    @Bean
-    public Help help(List<ParameterResolver> parameterResolvers) {
-        return new Help(parameterResolvers);
-    }
+	private Logger log = LoggerFactory.getLogger(XtermjsAutoConfiguration.class);
 
-    @Bean
-    public SpringBootStandardCommands springBootStandardCommands() {
-        return new SpringBootStandardCommands();
-    }
+	@Bean
+	public Help help(List<ParameterResolver> parameterResolvers) {
+		return new Help(parameterResolvers);
+	}
 
-    @Bean
-    public XtermRSocketController xtermRSocketController() {
-        return new XtermRSocketController();
-    }
+	@Bean
+	public SpringBootStandardCommands springBootStandardCommands() {
+		return new SpringBootStandardCommands();
+	}
+
+	@Bean
+	public XtermRSocketController xtermRSocketController() {
+		return new XtermRSocketController();
+	}
+
 }

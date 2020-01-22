@@ -5,6 +5,8 @@ import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.Shell;
 
+import java.util.Collection;
+
 /**
  * Xterm command handler: execute the commands from xterm.js
  *
@@ -25,11 +27,14 @@ public class XtermCommandHandler {
 		else if (result instanceof AttributedString) {
 			textOutput = ((AttributedString) result).toAnsi();
 		}
+		else if (result instanceof Collection) {
+			textOutput = String.join("\r\n", (Collection) result);
+		}
 		else {
 			textOutput = result.toString();
 		}
 		// text format for Xterm
-		if (textOutput.contains("\n") && !textOutput.contains("\r\n")) {
+		if (!textOutput.contains("\r\n") && textOutput.contains("\n")) {
 			return textOutput.replaceAll("\n", "\r\n");
 		}
 		else {

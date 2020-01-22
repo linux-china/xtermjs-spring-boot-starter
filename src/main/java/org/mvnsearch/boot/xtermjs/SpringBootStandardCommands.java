@@ -73,6 +73,9 @@ public class SpringBootStandardCommands {
 				if (beanClassName != null) {
 					lines.add("Class: " + beanClassName);
 				}
+				else {
+					lines.add("Class: " + applicationContext.getBean(beanName).getClass().getCanonicalName());
+				}
 				if (beanDefinition.getFactoryBeanName() != null) {
 					lines.add("Factory Bean: " + beanDefinition.getFactoryBeanName());
 				}

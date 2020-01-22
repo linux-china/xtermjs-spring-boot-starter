@@ -26,7 +26,7 @@ Supply a web terminal to manage spring boot app. Why?
 </dependency>    
 ```
 
-* Open application.properties and add gossip.seeds configuration.
+* Open application.properties and add rsocket configuration.
 
 ```properties
 # rsocket websocket

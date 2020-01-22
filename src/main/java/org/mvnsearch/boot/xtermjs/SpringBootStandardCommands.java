@@ -5,16 +5,15 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Spring Boot standard commands
@@ -30,7 +29,7 @@ public class SpringBootStandardCommands {
 	private ApplicationContext applicationContext;
 
 	@Autowired
-	private Environment env;
+	private AbstractEnvironment env;
 
 	@Autowired
 	private ConfigurableListableBeanFactory beanFactory;
@@ -46,7 +45,7 @@ public class SpringBootStandardCommands {
 		if (env.getProperty("spring.application.name") != null) {
 			lines.add("Application name: " + env.getProperty("spring.application.name"));
 		}
-		return String.join("\n", lines);
+		return linesToString(lines);
 	}
 
 	@ShellMethod("Display beans info")
@@ -54,7 +53,7 @@ public class SpringBootStandardCommands {
 		List<String> lines = new ArrayList<>(Arrays.asList(beanFactory.getBeanDefinitionNames()));
 		lines.add("");
 		lines.add("Beans: " + beanFactory.getBeanDefinitionNames().length);
-		return String.join("\n", lines);
+		return linesToString(lines);
 	}
 
 	@ShellMethod("Display bean info")
@@ -93,6 +92,61 @@ public class SpringBootStandardCommands {
 				}
 			}
 		}
+		return linesToString(lines);
+	}
+
+	@ShellMethod("Display env info")
+	public String env(@ShellOption(help = "env name", defaultValue = "") String envName) {
+		List<String> lines = new ArrayList<>();
+		if (!envName.isEmpty()) {
+			String key = envName;
+			String value = env.getProperty(key);
+			if (value == null) {
+				key = envName.toUpperCase();
+				value = env.getProperty(key);
+			}
+			if (value == null) {
+				lines.add("Env name not found!");
+			}
+			else {
+				lines.add(key + ": " + value);
+			}
+		}
+		else {
+			for (PropertySource<?> propertySource : env.getPropertySources()) {
+				if (propertySource instanceof EnumerablePropertySource) {
+					EnumerablePropertySource<?> enumerablePropertySource = (EnumerablePropertySource<?>) propertySource;
+					for (String propertyName : enumerablePropertySource.getPropertyNames()) {
+						lines.add(propertyName + ": " + env.getProperty(propertyName));
+					}
+				}
+			}
+			lines.add("");
+			lines.add("Env names: " + (lines.size() - 1));
+		}
+		return linesToString(lines);
+	}
+
+	@ShellMethod("Display metrics")
+	public String metrics(@ShellOption(help = "metrics name") String metricsName) {
+		return "";
+	}
+
+	@ShellMethod("Display health")
+	public String health(@ShellOption(help = "health component name") String componentName) {
+		return "";
+	}
+
+	@ShellMethod("Display profiles")
+	public String profiles() {
+		String[] profiles = env.getActiveProfiles();
+		if (profiles.length > 0) {
+			return "Active Profiles: [" + String.join(",", profiles) + "]";
+		}
+		return "No active profiles";
+	}
+
+	private static String linesToString(Collection<String> lines) {
 		return String.join("\n", lines);
 	}
 

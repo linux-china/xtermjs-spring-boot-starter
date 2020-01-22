@@ -55,13 +55,13 @@ public class SpringBootStandardCommands {
 		List<String> lines = new ArrayList<>();
 		String nameForSearch = beanNameOrClass.toLowerCase();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
-			if (!lines.isEmpty()) {
-				lines.add("-------------------------------");
-			}
 			BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
 			String beanClassName = beanDefinition.getBeanClassName();
 			if (beanName.toLowerCase().contains(nameForSearch)
 					|| (beanClassName != null && beanClassName.toLowerCase().contains(nameForSearch))) {
+				if (!lines.isEmpty()) {
+					lines.add("-------------------------------");
+				}
 				lines.add("Name: " + beanName);
 				if (beanClassName != null) {
 					lines.add("Class: " + beanClassName);

@@ -37,8 +37,16 @@ spring.rsocket.server.transport=websocket
 * Start Spring Boot app and visit http://localhost:8080/xterm
 
 
-# Internal commands
+# Terminal Features
+
+* History: arrow up/down
+* Ctrl+U: clear input
+* clear: clear the screen
+* exit: close the window/tab
+
+# Application commands
 
 * Help: Spring Shell help
-* exit/quit: close window/tab of terminal
 * system: display system information
+* beans: display all spring beans
+* bean: display bean definition

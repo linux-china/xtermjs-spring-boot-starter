@@ -1,9 +1,15 @@
 package org.mvnsearch.boot.xtermjs;
 
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tag;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringBootVersion;
+import org.springframework.boot.actuate.health.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
@@ -14,6 +20,7 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Spring Boot standard commands
@@ -33,6 +40,12 @@ public class SpringBootStandardCommands {
 
 	@Autowired
 	private ConfigurableListableBeanFactory beanFactory;
+
+	@Autowired
+	private HealthEndpoint healthEndpoint;
+
+	@Autowired
+	private MeterRegistry meterRegistry;
 
 	@ShellMethod("Display application info")
 	public String system() {
@@ -128,13 +141,59 @@ public class SpringBootStandardCommands {
 	}
 
 	@ShellMethod("Display metrics")
-	public String metrics(@ShellOption(help = "metrics name") String metricsName) {
-		return "";
+	public String metrics(@ShellOption(help = "metrics name", defaultValue = "") String metricsName) {
+		List<String> lines = new ArrayList<>();
+		if (!metricsName.isEmpty()) {
+			for (Meter meter : meterRegistry.getMeters()) {
+				String meterName = meter.getId().getName();
+				if (meterName.contains(metricsName)) {
+					lines.add(meterName(metricsName, meter.getId().getTags()) + ": "
+							+ meter.measure().iterator().next().getValue());
+				}
+			}
+		}
+		else {
+			for (Meter meter : meterRegistry.getMeters()) {
+				lines.add(meterName(meter.getId().getName(), meter.getId().getTags()) + ": "
+						+ meter.measure().iterator().next().getValue());
+			}
+			lines.add("");
+			lines.add("Metrics Count: " + (lines.size() - 1));
+		}
+		return linesToString(lines);
 	}
 
 	@ShellMethod("Display health")
-	public String health(@ShellOption(help = "health component name") String componentName) {
-		return "";
+	public String health(@ShellOption(help = "health component name", defaultValue = "") String componentName) {
+		List<String> lines = new ArrayList<>();
+		HealthComponent healthComponent = healthEndpoint.health();
+		Map<String, HealthComponent> healthComponents;
+		if (healthComponent instanceof SystemHealth) {
+			healthComponents = ((SystemHealth) healthComponent).getComponents();
+		}
+		else if (healthComponent instanceof CompositeHealth) {
+			healthComponents = ((CompositeHealth) healthComponent).getComponents();
+		}
+		else {
+			healthComponents = new HashMap<>();
+			healthComponents.put("Default", healthComponent);
+		}
+		for (Map.Entry<String, HealthComponent> entry : healthComponents.entrySet()) {
+			Status status = entry.getValue().getStatus();
+			AttributedStyle foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN);
+			if (!status.getCode().equalsIgnoreCase(Status.UP.getCode())) {
+				foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.RED);
+			}
+			String line;
+			if (status.getDescription() != null && !status.getDescription().isEmpty()) {
+				line = entry.getKey() + ": " + status.getCode() + " -- " + status.getDescription();
+			}
+			else {
+				line = entry.getKey() + ": " + status.getCode();
+			}
+			lines.add(new AttributedString(line, foreground).toAnsi());
+		}
+		return linesToString(lines);
 	}
 
 	@ShellMethod("Display profiles")
@@ -148,6 +207,14 @@ public class SpringBootStandardCommands {
 
 	private static String linesToString(Collection<String> lines) {
 		return String.join("\n", lines);
+	}
+
+	private static String meterName(String name, List<Tag> tags) {
+		if (tags != null && tags.size() > 0) {
+			return tags.stream().map(tag -> tag.getKey() + ":" + tag.getValue())
+					.collect(Collectors.joining(",", name + "(", ")"));
+		}
+		return name;
 	}
 
 }

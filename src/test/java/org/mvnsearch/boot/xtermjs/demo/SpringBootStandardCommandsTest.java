@@ -28,4 +28,22 @@ public class SpringBootStandardCommandsTest {
 		System.out.println(result);
 	}
 
+	@Test
+	public void testEnv() {
+		Object result = shell.evaluate(() -> "env home");
+		System.out.println(result);
+	}
+
+	@Test
+	public void testHealth() {
+		Object result = shell.evaluate(() -> "health");
+		System.out.println(result);
+	}
+
+	@Test
+	public void testMetrics() {
+		Object result = shell.evaluate(() -> "metrics jvm.memory.used");
+		System.out.println(result);
+	}
+
 }

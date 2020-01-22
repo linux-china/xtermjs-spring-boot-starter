@@ -186,10 +186,11 @@ public class SpringBootStandardCommands {
 			}
 			String line;
 			if (status.getDescription() != null && !status.getDescription().isEmpty()) {
-				line = entry.getKey() + ": " + status.getCode() + " -- " + status.getDescription();
+				line = healthName(entry.getKey(), entry.getValue()) + ": " + status.getCode() + " -- "
+						+ status.getDescription();
 			}
 			else {
-				line = entry.getKey() + ": " + status.getCode();
+				line = healthName(entry.getKey(), entry.getValue()) + ": " + status.getCode();
 			}
 			lines.add(new AttributedString(line, foreground).toAnsi());
 		}
@@ -213,6 +214,17 @@ public class SpringBootStandardCommands {
 		if (tags != null && tags.size() > 0) {
 			return tags.stream().map(tag -> tag.getKey() + ":" + tag.getValue())
 					.collect(Collectors.joining(",", name + "(", ")"));
+		}
+		return name;
+	}
+
+	private static String healthName(String name, HealthComponent healthComponent) {
+		if (healthComponent instanceof Health) {
+			Map<String, Object> details = ((Health) healthComponent).getDetails();
+			if (details != null && !details.isEmpty()) {
+				return details.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue().toString())
+						.collect(Collectors.joining(",", name + "(", ")"));
+			}
 		}
 		return name;
 	}

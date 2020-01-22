@@ -3,7 +3,7 @@ xtermjs-spring-boot-starter
 [![Build Status](https://api.travis-ci.com/linux-china/xtermjs-spring-boot-starter.svg?branch=master)](https://travis-ci.com/linux-china/xtermjs-spring-boot-starter)
 
 
-Supply a web terminal to manage spring boot app. Why?
+Supply a web terminal to manage Spring Boot app. Why?
 
 * Access easy: not install, no env setup, just open the browser
 * Use commands to manage app

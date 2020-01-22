@@ -2,13 +2,17 @@ xtermjs-spring-boot-starter
 ===========================
 [![Build Status](https://api.travis-ci.com/linux-china/xtermjs-spring-boot-starter.svg?branch=master)](https://travis-ci.com/linux-china/xtermjs-spring-boot-starter)
 
-Integrate xterm for Spring Boot with Xterm.js & Spring Shell
 
-# Why terminal in browser?
+Supply a web terminal to manage spring boot app. Why?
 
-With app terminal in browser, and you can understand all things in app.
+* Access easy: not install, no env setup, just open the browser
+* Use commands to manage app
+* No need to us curl to call lots of REST API
+* Easy to write commands by Spring Shell
 
 ![Xterm Console](console.png)
+
+**Attention**: You should care about security by yourself.
 
 # How to use?
 

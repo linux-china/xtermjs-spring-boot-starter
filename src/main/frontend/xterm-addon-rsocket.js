@@ -19,6 +19,8 @@ export class RSocketAddon {
     constructor(url, options) {
         // current command line
         this.commandLine = '';
+        // commands history
+        this.history = new HistoryController(100);
         // command flux
         this.commandFlux = new FlowableProcessor({});
         this.rsocketClient = new RSocketClient({
@@ -83,6 +85,28 @@ export class RSocketAddon {
                     }
                     this.commandLine = this.commandLine.substr(0, this.commandLine.length - 1);
                 }
+            } else if (code === 0x1b) {
+                switch (data.substr(1)) {
+                    case "[A": // Up arrow
+                        this.terminal.write("\r\x1B[K$");
+                        let previous = this.history.getPrevious();
+                        if (previous != null) {
+                            this.terminal.write(previous);
+                            this.commandLine = previous;
+                        }
+                        break;
+                    case "[B": // Down arrow
+                        this.terminal.write("\r\x1B[K$");
+                        let next = this.history.getNext();
+                        if (next != null) {
+                            this.terminal.write(next);
+                            this.commandLine = next;
+                        }
+                        break;
+                }
+            } else if (code === 21) { // Control+u to clear line
+                this.terminal.write("\r\x1B[K$");
+                this.commandLine = "";
             } else if (code < 32) { // Control
 
             } else { // Visible
@@ -99,10 +123,11 @@ export class RSocketAddon {
             return;
         }
         if (this.commandLine.trim().length > 0) {
+            this.history.push(this.commandLine.trim());
             if (this.commandLine === "clear") { //clear screen
                 this.terminal.clear();
                 this.terminal.reset();
-            } else if (this.commandLine === "exit" || this.commandLine === "quit" ) { //close window or tab
+            } else if (this.commandLine === "exit" || this.commandLine === "quit") { //close window or tab
                 this.terminal.dispose();
                 this.rsocketClient.close();
                 window.close();
@@ -130,5 +155,53 @@ export class RSocketAddon {
         buffer.writeInt8(key.length, 0);
         buffer.write(key, 1);
         return buffer
+    }
+}
+
+class HistoryController {
+    constructor(size) {
+        this.size = size;
+        this.entries = [];
+        this.cursor = 0;
+    }
+
+    /**
+     * Push an entry and maintain ring buffer size
+     */
+    push(entry) {
+        // Skip duplicate entries
+        const lastEntry = this.entries[this.entries.length - 1];
+        if (entry === lastEntry) return;
+        // Keep track of entries
+        this.entries.push(entry);
+        if (this.entries.length > this.size) {
+            this.entries.pop(0);
+        }
+        this.cursor = this.entries.length;
+    }
+
+    /**
+     * Rewind history cursor on the last entry
+     */
+    rewind() {
+        this.cursor = this.entries.length;
+    }
+
+    /**
+     * Returns the previous entry
+     */
+    getPrevious() {
+        const idx = Math.max(0, this.cursor - 1);
+        this.cursor = idx;
+        return this.entries[idx];
+    }
+
+    /**
+     * Returns the next entry
+     */
+    getNext() {
+        const idx = Math.min(this.entries.length, this.cursor + 1);
+        this.cursor = idx;
+        return this.entries[idx];
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -29,6 +30,9 @@ public class SpringBootStandardCommands {
 	private ApplicationContext applicationContext;
 
 	@Autowired
+	private Environment env;
+
+	@Autowired
 	private ConfigurableListableBeanFactory beanFactory;
 
 	@ShellMethod("Display application info")
@@ -39,6 +43,9 @@ public class SpringBootStandardCommands {
 		lines.add("OS Name: " + System.getProperty("os.name"));
 		lines.add("OS Version: " + System.getProperty("os.version"));
 		lines.add("Spring Boot Version: " + SpringBootVersion.getVersion());
+		if (env.getProperty("spring.application.name") != null) {
+			lines.add("Application name: " + env.getProperty("spring.application.name"));
+		}
 		return String.join("\n", lines);
 	}
 

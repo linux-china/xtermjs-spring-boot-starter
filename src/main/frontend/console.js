@@ -31,7 +31,9 @@ class XtermConsole extends HTMLElement {
         term.loadAddon(new RSocketAddon(rsocketUrl));
         term.open(container);
         fitAddon.fit();
-        term.writeln('Welcome xterm with RSocket.');
+        //welcome banner
+        let hint = title || 'Welcome xterm with RSocket.';
+        term.writeln(hint);
         term.prompt();
         term.focus();
         this.terminal = term;

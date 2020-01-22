@@ -1,5 +1,6 @@
 package org.mvnsearch.boot.xtermjs;
 
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
@@ -25,6 +26,7 @@ public class SpringBootStandardCommands {
 		lines.add("Java Version: " + System.getProperty("java.version"));
 		lines.add("OS Name: " + System.getProperty("os.name"));
 		lines.add("OS Version: " + System.getProperty("os.version"));
+		lines.add("Spring Boot Version: " + SpringBootVersion.getVersion());
 		return String.join("\n", lines);
 	}
 

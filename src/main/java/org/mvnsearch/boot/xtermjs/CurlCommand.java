@@ -70,10 +70,10 @@ public class CurlCommand {
 					help = "Show version number and quit") boolean showVersion,
 			@ShellOption(arity = 0, value = { "-h", "--help" }, defaultValue = "false",
 					help = "Show help information") boolean showHelp) {
-		if (showVersion) { //show version
+		if (showVersion) { // show version
 			return Mono.just("7.0.0 - WebClient");
 		}
-		if (showHelp) {  //show help
+		if (showHelp) { // show help
 			return Mono.just(this.shell.evaluate(() -> "help curl").toString());
 		}
 		WebClient.RequestBodySpec requestBodySpec;

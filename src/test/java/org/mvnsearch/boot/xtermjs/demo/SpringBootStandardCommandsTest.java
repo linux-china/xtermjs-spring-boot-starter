@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
  *
  * @author linux_china
  */
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class SpringBootStandardCommandsTest {
 
 	@Autowired
@@ -49,8 +49,8 @@ public class SpringBootStandardCommandsTest {
 
 	@Test
 	public void testActuator() {
-		Object result = shell.evaluate(() -> "actuator health");
-		System.out.println(((Mono)result).block());
+		Object result = shell.evaluate(() -> "actuator");
+		System.out.println(((Mono) result).block());
 	}
 
 }

@@ -23,7 +23,7 @@ public class XtermRSocketController extends XtermCommandHandler {
 
 	@MessageMapping("xterm.shell")
 	public Flux<String> shell(Flux<String> commands) {
-		return commands.filter(data -> !data.trim().isEmpty()).map(this::executeCommand);
+		return commands.filter(data -> !data.trim().isEmpty()).flatMap(this::executeCommand);
 	}
 
 	@GetMapping(value = "/xterm", produces = "text/html; charset=utf-8")

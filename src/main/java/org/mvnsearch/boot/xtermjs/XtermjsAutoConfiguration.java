@@ -30,6 +30,11 @@ public class XtermjsAutoConfiguration {
 	}
 
 	@Bean
+	public CurlCommand curlCommand() {
+		return new CurlCommand();
+	}
+
+	@Bean
 	public XtermRSocketController xtermRSocketController() {
 		return new XtermRSocketController();
 	}

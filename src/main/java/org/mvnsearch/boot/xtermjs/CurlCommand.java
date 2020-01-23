@@ -172,13 +172,4 @@ public class CurlCommand {
 		}).timeout(Duration.ofSeconds(maxTime));
 	}
 
-	// This method returns filter function which will log request data
-	private static ExchangeFilterFunction logRequest() {
-		return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-			clientRequest.headers()
-					.forEach((name, values) -> values.forEach(value -> System.out.println(name + ":" + value)));
-			return Mono.just(clientRequest);
-		});
-	}
-
 }

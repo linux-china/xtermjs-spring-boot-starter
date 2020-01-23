@@ -50,3 +50,4 @@ spring.rsocket.server.transport=websocket
 * system: display system information
 * beans: display all spring beans
 * bean: display bean definition
+* curl: curl command for http operation

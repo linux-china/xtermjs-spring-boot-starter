@@ -46,6 +46,16 @@
         <url>https://github.com/linux-china/xtermjs-spring-boot-starter.git</url>
     </scm>
 
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/linux-china/xtermjs-spring-boot-starter/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.com/linux-china/xtermjs-spring-boot-starter</url>
+    </ciManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.jetbrains</groupId>

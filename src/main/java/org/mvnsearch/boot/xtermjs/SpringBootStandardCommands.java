@@ -17,6 +17,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -204,6 +205,18 @@ public class SpringBootStandardCommands {
 			return "Active Profiles: [" + String.join(",", profiles) + "]";
 		}
 		return "No active profiles";
+	}
+
+	@ShellMethod("Display actuator")
+	public Mono<String> actuator(@ShellOption(help = "health component name", defaultValue = "") String endpoint) {
+		String serverPort = env.getProperty("server.port");
+		if (serverPort == null || serverPort.equals("-1")) {
+			serverPort = "8080";
+		}
+		String managementPort = env.getProperty("management.server.port", serverPort);
+		String managementPath = env.getProperty("management.endpoints.web.base-path", "/actuator");
+		return CurlCommand.webClient.get().uri("http://127.0.0.1:" + managementPort + managementPath + "/" + endpoint)
+				.retrieve().bodyToMono(String.class);
 	}
 
 	private static String linesToString(Collection<String> lines) {

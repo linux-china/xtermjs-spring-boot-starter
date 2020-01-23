@@ -29,9 +29,9 @@ import java.util.List;
 @ShellComponent
 public class CurlCommand {
 
-	private static WebClient webClient = WebClient.builder().build();
+	public static WebClient webClient = WebClient.builder().build();
 
-	private static WebClient webClientFollowRedirect = WebClient.builder()
+	public static WebClient webClientFollowRedirect = WebClient.builder()
 			.clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true))).build();
 
 	@ShellMethod("Curl command")

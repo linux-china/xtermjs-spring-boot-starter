@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringBootVersion;
+import org.springframework.boot.actuate.endpoint.web.annotation.WebEndpointDiscoverer;
 import org.springframework.boot.actuate.health.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
@@ -47,6 +48,9 @@ public class SpringBootStandardCommands {
 
 	@Autowired
 	private MeterRegistry meterRegistry;
+
+	@Autowired
+	private WebEndpointDiscoverer endpointDiscoverer;
 
 	@ShellMethod("Display application info")
 	public String system() {
@@ -209,6 +213,11 @@ public class SpringBootStandardCommands {
 
 	@ShellMethod("Display actuator")
 	public Mono<String> actuator(@ShellOption(help = "health component name", defaultValue = "") String endpoint) {
+		if (endpoint.isEmpty()) {
+			return Mono.just(endpointDiscoverer.getEndpoints().stream()
+					.map(exposableWebEndpoint -> exposableWebEndpoint.getEndpointId().toLowerCaseString())
+					.collect(Collectors.joining(",")));
+		}
 		String serverPort = env.getProperty("server.port");
 		if (serverPort == null || serverPort.equals("-1")) {
 			serverPort = "8080";

@@ -1,8 +1,10 @@
 package org.mvnsearch.boot.xtermjs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.shell.Shell;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -11,7 +13,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -28,6 +29,9 @@ import java.util.List;
  */
 @ShellComponent
 public class CurlCommand {
+
+	@Autowired
+	private Shell shell;
 
 	public static WebClient webClient = WebClient.builder().build();
 
@@ -63,9 +67,14 @@ public class CurlCommand {
 					help = "Follow redirects") boolean followRedirects,
 			@ShellOption(arity = 0, value = { "-K", "--insecure" }, defaultValue = "false") boolean allowInsecure,
 			@ShellOption(arity = 0, value = { "-v", "--version" }, defaultValue = "false",
-					help = "Show version number and quit") boolean showVersion) {
-		if (showVersion) {
+					help = "Show version number and quit") boolean showVersion,
+			@ShellOption(arity = 0, value = { "-h", "--help" }, defaultValue = "false",
+					help = "Show help information") boolean showHelp) {
+		if (showVersion) { //show version
 			return Mono.just("7.0.0 - WebClient");
+		}
+		if (showHelp) {  //show help
+			return Mono.just(this.shell.evaluate(() -> "help curl").toString());
 		}
 		WebClient.RequestBodySpec requestBodySpec;
 		// follow redirects

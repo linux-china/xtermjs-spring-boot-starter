@@ -23,7 +23,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -192,13 +191,17 @@ public class SpringBootStandardCommands {
 					lines.add("=========" + beanInterface.getCanonicalName() + " ========");
 					Arrays.stream(beanInterface.getDeclaredMethods()).map(method -> {
 						if (method.getParameterCount() == 0) {
-							return method.getReturnType().getSimpleName() + " " + method.getName() + "()";
+							return formatClassName(method.getGenericReturnType().getTypeName()) + " " + method.getName()
+									+ "()";
 						}
 						else {
-							String parameterTypes = Arrays.stream(method.getGenericParameterTypes())
-									.map(Type::getTypeName).collect(Collectors.joining(","));
-							return method.getReturnType().getSimpleName() + " " + method.getName() + "("
-									+ parameterTypes + ")";
+							String parameterTypes = Arrays.stream(method.getParameters()).map(parameter -> {
+								String parameterName = parameter.getName();
+								return formatClassName(parameter.getParameterizedType().getTypeName()) + " "
+										+ parameterName;
+							}).collect(Collectors.joining(", "));
+							return formatClassName(method.getGenericReturnType().getTypeName()) + " " + method.getName()
+									+ "(" + parameterTypes + ")";
 						}
 					}).forEach(lines::add);
 				}
@@ -344,6 +347,10 @@ public class SpringBootStandardCommands {
 			}
 		}
 		return name;
+	}
+
+	public static String formatClassName(String classFullName) {
+		return classFullName.replaceAll("java.lang.([A-Z]\\w*)", "$1");
 	}
 
 }

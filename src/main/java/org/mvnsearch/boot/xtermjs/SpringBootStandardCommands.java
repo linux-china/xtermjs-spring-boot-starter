@@ -126,9 +126,14 @@ public class SpringBootStandardCommands {
 	@ShellMethod("Display Classpath info")
 	public String classpath() {
 		List<String> lines = new ArrayList<>();
-		ClassLoader cl = this.getClass().getClassLoader();
-		URL[] urls = ((URLClassLoader) cl).getURLs();
-		Arrays.stream(urls).map(URL::toString).forEach(lines::add);
+		if (env.getProperty("CLASSPATH") != null) {
+			lines.addAll(Arrays.asList(env.getProperty("CLASSPATH").split(File.pathSeparator)));
+		}
+		else {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			URL[] urls = ((URLClassLoader) cl).getURLs();
+			Arrays.stream(urls).map(URL::toString).forEach(lines::add);
+		}
 		return linesToString(lines);
 	}
 

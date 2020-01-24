@@ -101,6 +101,27 @@ public class SpringBootStandardCommands {
 		return linesToString(ManagementFactory.getRuntimeMXBean().getInputArguments());
 	}
 
+	@ShellMethod("Show Threads")
+	public String threads() {
+		String threadPattern = "%4s %5s %10s %8s %16s  %s";
+		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+		List<String> lines = new ArrayList<>();
+		lines.add(String.format(threadPattern, "ID", "Alive", "State", "Priority", "Group", "Name"));
+		threadSet.stream().map(thread -> {
+			return String.format(threadPattern, thread.getId(), thread.isAlive() ? 1 : 0, thread.getState().name(),
+					thread.getPriority(), (thread.getThreadGroup() == null ? "" : thread.getThreadGroup().getName()),
+					thread.getName());
+		}).forEach(lines::add);
+		lines.add("");
+		lines.add("Thread Count: " + (lines.size() - 1));
+		return linesToString(lines);
+	}
+
+	@ShellMethod("Show Thread")
+	public String thread(@ShellOption(help = "Thread ID", defaultValue = "") Integer threadId) {
+		return "";
+	}
+
 	@ShellMethod("Display Classpath info")
 	public String classpath() {
 		List<String> lines = new ArrayList<>();

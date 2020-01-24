@@ -18,6 +18,30 @@ public class SpringBootStandardCommandsTest {
 	private Shell shell;
 
 	@Test
+	public void testSystemCommand() {
+		Object result = shell.evaluate(() -> "system");
+		System.out.println(result);
+	}
+
+	@Test
+	public void testClasspath() {
+		Object result = shell.evaluate(() -> "classpath");
+		System.out.println(result);
+	}
+
+	@Test
+	public void testOptions() {
+		Object result = shell.evaluate(() -> "options");
+		System.out.println(result);
+	}
+
+	@Test
+	public void testThreads() {
+		Object result = shell.evaluate(() -> "threads");
+		System.out.println(result);
+	}
+
+	@Test
 	public void testBeansCommand() {
 		Object result = shell.evaluate(() -> "beans");
 		System.out.println(result);
@@ -31,7 +55,7 @@ public class SpringBootStandardCommandsTest {
 
 	@Test
 	public void testEnv() {
-		Object result = shell.evaluate(() -> "env home");
+		Object result = shell.evaluate(() -> "env");
 		System.out.println(result);
 	}
 

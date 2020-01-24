@@ -1,5 +1,6 @@
 package org.mvnsearch.boot.xtermjs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class XtermCommandHandler {
 	@Autowired
 	private Shell shell;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	public Mono<String> executeCommand(String commandLine) {
 		Object result = this.shell.evaluate(() -> commandLine);
 		String textOutput;
@@ -32,10 +36,11 @@ public class XtermCommandHandler {
 			textOutput = String.join("\r\n", (Collection) result);
 		}
 		else if (result instanceof Mono) {
-			return ((Mono<String>) result).map(this::formatLineBreak);
+			return ((Mono<String>) result).map(this::formatObject).map(this::formatLineBreak).onErrorReturn("")
+					.defaultIfEmpty("");
 		}
 		else {
-			textOutput = result.toString();
+			textOutput = formatObject(result);
 		}
 		// text format for Xterm
 		if (!textOutput.contains("\r\n") && textOutput.contains("\n")) {
@@ -52,6 +57,25 @@ public class XtermCommandHandler {
 		}
 		else {
 			return textOutput;
+		}
+	}
+
+	public String formatObject(Object object) {
+		// to string or json output
+		String classFullName = object.getClass().getCanonicalName();
+		if (classFullName == null) {
+			classFullName = object.getClass().getSimpleName();
+		}
+		if (classFullName.matches("java.lang.([A-Z]\\w*)")) {
+			return object.toString();
+		}
+		else {
+			try {
+				return "(" + classFullName + ")" + objectMapper.writeValueAsString(object);
+			}
+			catch (Exception ignore) {
+				return object.toString();
+			}
 		}
 	}
 

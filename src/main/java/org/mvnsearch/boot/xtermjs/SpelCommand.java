@@ -32,7 +32,6 @@ public class SpelCommand implements CustomizedCommand {
 	@PostConstruct
 	public void init() {
 		this.spelContext = new StandardEvaluationContext();
-		this.spelContext.setVariable("systemProperties", System.getenv());
 		this.spelContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));
 		this.spelContext.addPropertyAccessor(new BeanExpressionContextAccessor());
 		this.rootObject = new BeanExpressionContext(beanFactory, null);

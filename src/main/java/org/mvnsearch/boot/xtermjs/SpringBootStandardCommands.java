@@ -20,6 +20,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import reactor.core.publisher.Mono;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,6 +64,18 @@ public class SpringBootStandardCommands {
 		if (env.getProperty("spring.application.name") != null) {
 			lines.add("Application name: " + env.getProperty("spring.application.name"));
 		}
+		// cpu + memory + disk
+		int mb = 1024 * 1024;
+		int gb = mb * 1024;
+		Runtime runtime = Runtime.getRuntime();
+		lines.add("CPU Cores: " + runtime.availableProcessors());
+		lines.add("Total Memory(M): " + runtime.totalMemory() / mb);
+		lines.add("Free Memory(M): " + runtime.freeMemory() / mb);
+		lines.add("Used Memory(M): " + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+		lines.add("Max Memory(M): " + runtime.maxMemory() / mb);
+		File path = new File(".");
+		lines.add("Total Space(G): " + path.getTotalSpace() / gb);
+		lines.add("Free Space(G): " + path.getUsableSpace() / gb);
 		return linesToString(lines);
 	}
 

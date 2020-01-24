@@ -22,6 +22,8 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,7 +96,11 @@ public class SpringBootStandardCommands {
 
 	@ShellMethod("Display Classpath info")
 	public String classpath() {
-		return linesToString(Arrays.asList(System.getProperty("java.class.path").split("[:;]")));
+		List<String> lines = new ArrayList<>();
+		ClassLoader cl = this.getClass().getClassLoader();
+		URL[] urls = ((URLClassLoader) cl).getURLs();
+		Arrays.stream(urls).map(URL::toString).forEach(lines::add);
+		return linesToString(lines);
 	}
 
 	@ShellMethod("Display beans info")

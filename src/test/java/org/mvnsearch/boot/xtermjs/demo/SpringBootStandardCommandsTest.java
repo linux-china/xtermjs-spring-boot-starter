@@ -49,7 +49,7 @@ public class SpringBootStandardCommandsTest {
 
 	@Test
 	public void testBeanCommand() {
-		Object result = shell.evaluate(() -> "bean help");
+		Object result = shell.evaluate(() -> "bean userService");
 		System.out.println(result);
 	}
 

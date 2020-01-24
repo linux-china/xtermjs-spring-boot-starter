@@ -21,6 +21,7 @@ import org.springframework.shell.standard.ShellOption;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,14 +57,14 @@ public class SpringBootStandardCommands {
 	@ShellMethod("Display application info")
 	public String system() {
 		List<String> lines = new ArrayList<>();
+		if (env.getProperty("spring.application.name") != null) {
+			lines.add("Application name: " + env.getProperty("spring.application.name"));
+		}
 		lines.add("Started Time: " + startedTime);
 		lines.add("Java Version: " + System.getProperty("java.version"));
 		lines.add("OS Name: " + System.getProperty("os.name"));
 		lines.add("OS Version: " + System.getProperty("os.version"));
 		lines.add("Spring Boot Version: " + SpringBootVersion.getVersion());
-		if (env.getProperty("spring.application.name") != null) {
-			lines.add("Application name: " + env.getProperty("spring.application.name"));
-		}
 		// cpu + memory + disk
 		int mb = 1024 * 1024;
 		int gb = mb * 1024;
@@ -76,6 +77,13 @@ public class SpringBootStandardCommands {
 		File path = new File(".");
 		lines.add("Total Space(G): " + path.getTotalSpace() / gb);
 		lines.add("Free Space(G): " + path.getUsableSpace() / gb);
+		try {
+			InetAddress inetAddress = InetAddress.getLocalHost();
+			lines.add("IP: " + inetAddress.getHostAddress());
+		}
+		catch (Exception ignore) {
+
+		}
 		return linesToString(lines);
 	}
 

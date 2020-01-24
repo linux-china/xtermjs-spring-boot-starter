@@ -21,6 +21,7 @@ import org.springframework.shell.standard.ShellOption;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -62,6 +63,7 @@ public class SpringBootStandardCommands {
 		if (env.getProperty("spring.application.name") != null) {
 			lines.add("Application name: " + env.getProperty("spring.application.name"));
 		}
+		lines.add("Shell: " + env.getProperty("SHELL"));
 		if (env.getProperty("PID") != null) {
 			lines.add("PID: " + env.getProperty("PID"));
 		}
@@ -92,6 +94,11 @@ public class SpringBootStandardCommands {
 
 		}
 		return linesToString(lines);
+	}
+
+	@ShellMethod("Java Options")
+	public String options() {
+		return linesToString(ManagementFactory.getRuntimeMXBean().getInputArguments());
 	}
 
 	@ShellMethod("Display Classpath info")

@@ -1,13 +1,20 @@
 package org.mvnsearch.boot.xtermjs;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Xterm command handler: execute the commands from xterm.js
@@ -19,13 +26,47 @@ public class XtermCommandHandler {
 	@Autowired
 	private Shell shell;
 
-	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	public List<CustomizedCommand> customizedCommands;
+
+	private Map<String, CustomizedCommand> customizedCommandMap = new HashMap<>();
+
+	@PostConstruct
+	public void init() {
+		this.objectMapper = new ObjectMapper();
+		this.objectMapper.registerModule(new Jdk8Module());
+		this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
+		for (CustomizedCommand customizedCommand : customizedCommands) {
+			customizedCommandMap.put(customizedCommand.getName(), customizedCommand);
+		}
+	}
+
 	public Mono<String> executeCommand(String commandLine) {
-		Object result = this.shell.evaluate(() -> commandLine);
+		String command;
+		String arguments = null;
+		int spaceIndex = commandLine.indexOf(" ");
+		if (spaceIndex > 0) {
+			command = commandLine.substring(0, spaceIndex);
+			arguments = commandLine.substring(spaceIndex + 1).trim();
+		}
+		else {
+			command = commandLine;
+		}
+		Object result;
+		if (customizedCommandMap.containsKey(command)) {
+			result = customizedCommandMap.get(command).execute(arguments);
+		}
+		else {
+			result = this.shell.evaluate(() -> commandLine);
+		}
 		String textOutput;
-		if (result instanceof Exception) {
+		if (result == null) {
+			textOutput = "";
+		}
+		else if (result instanceof Exception) {
 			textOutput = new AttributedString(result.toString(),
 					AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAnsi();
 		}
@@ -66,12 +107,12 @@ public class XtermCommandHandler {
 		if (classFullName == null) {
 			classFullName = object.getClass().getSimpleName();
 		}
-		if (classFullName.matches("java.lang.([A-Z]\\w*)")) {
+		if (object instanceof CharSequence || classFullName.matches("java.lang.([A-Z]\\w*)")) {
 			return object.toString();
 		}
 		else {
 			try {
-				return "(" + classFullName + ")" + objectMapper.writeValueAsString(object);
+				return "Class: " + classFullName + "\n" + objectMapper.writeValueAsString(object);
 			}
 			catch (Exception ignore) {
 				return object.toString();

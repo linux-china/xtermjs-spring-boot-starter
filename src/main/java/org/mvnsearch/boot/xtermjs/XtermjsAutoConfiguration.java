@@ -20,6 +20,7 @@ public class XtermjsAutoConfiguration {
 	private Logger log = LoggerFactory.getLogger(XtermjsAutoConfiguration.class);
 
 	@Bean
+	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 	public Help help(List<ParameterResolver> parameterResolvers) {
 		return new Help(parameterResolvers);
 	}

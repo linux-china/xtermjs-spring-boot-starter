@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface UserService {
 
+	public User findById(Integer id);
+
 	public String findRealName(Integer id);
 
 	public List<String> findVips(List<Integer> ids);

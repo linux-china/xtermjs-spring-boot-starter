@@ -3,6 +3,7 @@ package org.mvnsearch.boot.xtermjs.demo;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +15,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
 	@Override
+	public User findById(Integer id) {
+		User user = new User();
+		user.setId(id);
+		user.setName("linux_china");
+		user.setBirth(new Date());
+		return user;
+	}
+
+	@Override
 	public String findRealName(Integer id) {
 		return "linux_china";
 	}
@@ -23,6 +33,7 @@ public class UserServiceImpl implements UserService {
 		return Arrays.asList("first", "second");
 	}
 
+	@Override
 	public void save(String name, Integer age) {
 
 	}

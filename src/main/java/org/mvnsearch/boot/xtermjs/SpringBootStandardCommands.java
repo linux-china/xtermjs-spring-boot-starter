@@ -18,10 +18,12 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.springframework.util.ClassUtils;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -142,22 +144,34 @@ public class SpringBootStandardCommands {
 	@ShellMethod("Display bean info")
 	public String bean(@ShellOption(help = "Bean name or class") String beanNameOrClass) {
 		List<String> lines = new ArrayList<>();
-		String nameForSearch = beanNameOrClass.toLowerCase();
+		String nameForSearch = beanNameOrClass;
+		if (beanNameOrClass.contains("*")) {
+			nameForSearch = beanNameOrClass.replaceAll("\\*", "").toLowerCase();
+		}
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
 			String beanClassName = beanDefinition.getBeanClassName();
-			if (beanName.toLowerCase().contains(nameForSearch)
-					|| (beanClassName != null && beanClassName.toLowerCase().contains(nameForSearch))) {
+			Object bean = applicationContext.getBean(beanName);
+			if (beanClassName == null) {
+				beanClassName = bean.getClass().getCanonicalName();
+				if (beanClassName == null) {
+					beanClassName = bean.getClass().getSimpleName();
+				}
+			}
+			boolean matched;
+			if (beanNameOrClass.contains("*")) {
+				matched = beanName.toLowerCase().contains(nameForSearch)
+						|| beanClassName.toLowerCase().contains(nameForSearch);
+			}
+			else {
+				matched = beanNameOrClass.equalsIgnoreCase(beanName) || beanNameOrClass.equalsIgnoreCase(beanClassName);
+			}
+			if (matched) {
 				if (!lines.isEmpty()) {
 					lines.add("-------------------------------");
 				}
 				lines.add("Name: " + beanName);
-				if (beanClassName != null) {
-					lines.add("Class: " + beanClassName);
-				}
-				else {
-					lines.add("Class: " + applicationContext.getBean(beanName).getClass().getCanonicalName());
-				}
+				lines.add("Class: " + beanClassName);
 				if (beanDefinition.getFactoryBeanName() != null) {
 					lines.add("Factory Bean: " + beanDefinition.getFactoryBeanName());
 				}
@@ -173,7 +187,23 @@ public class SpringBootStandardCommands {
 				if (beanDefinition.getParentName() != null) {
 					lines.add("Parent: " + beanDefinition.getParentName());
 				}
+				Class<?>[] allInterfaces = ClassUtils.getAllInterfaces(bean);
+				for (Class<?> beanInterface : allInterfaces) {
+					lines.add("=========" + beanInterface.getCanonicalName() + " ========");
+					Arrays.stream(beanInterface.getDeclaredMethods()).map(method -> {
+						if (method.getParameterCount() == 0) {
+							return method.getReturnType().getSimpleName() + " " + method.getName() + "()";
+						}
+						else {
+							String parameterTypes = Arrays.stream(method.getGenericParameterTypes())
+									.map(Type::getTypeName).collect(Collectors.joining(","));
+							return method.getReturnType().getSimpleName() + " " + method.getName() + "("
+									+ parameterTypes + ")";
+						}
+					}).forEach(lines::add);
+				}
 			}
+
 		}
 		return linesToString(lines);
 	}

@@ -47,7 +47,7 @@ public class SpelCommand implements CustomizedCommand {
 	@Nullable
 	public Object execute(String expressionText) {
 		Expression expression;
-		if (expressionText.startsWith("#{")) {
+		if (expressionText.contains("#{")) {
 			expression = spelParser.parseExpression(expressionText, new TemplateParserContext());
 		}
 		else {

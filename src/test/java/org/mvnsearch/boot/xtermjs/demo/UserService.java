@@ -13,5 +13,6 @@ public interface UserService {
 
 	public List<String> findVips(List<Integer> ids);
 
-    public void save(String name, Integer age) ;
+	public void save(String name, Integer age);
+
 }

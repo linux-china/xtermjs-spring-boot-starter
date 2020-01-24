@@ -49,7 +49,7 @@ public class SpringBootStandardCommandsTest {
 
 	@Test
 	public void testSpelCommand() {
-		Object result = shell.evaluate(() -> "spel @userService.findRealName(1)");
+		Object result = shell.evaluate(() -> "spel @userService.findById(1)");
 		System.out.println(result);
 	}
 

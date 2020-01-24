@@ -20,8 +20,8 @@ Supply a web terminal to manage Spring Boot app. Why?
 
 ```xml
 <dependency>
-    <groupId>org.mvnsearch.boot</groupId>
-    <artifactId>xterm-spring-boot-starter</artifactId>
+    <groupId>org.mvnsearch</groupId>
+    <artifactId>xtermjs-spring-boot-starter</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>    
 ```

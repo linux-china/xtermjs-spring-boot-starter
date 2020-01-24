@@ -53,4 +53,8 @@ spring.rsocket.server.transport=websocket
 * profiles: display profile
 * metrics: display metrics
 * health: display health information
+* classpath: display classpath
+* spel: execute SpEL expression
+* threads: display threads
+* actuator: display actuator information
 * curl: curl command for http operation

@@ -36,6 +36,11 @@ public class XtermjsAutoConfiguration {
 	}
 
 	@Bean
+	public SpelCommand spelCommand() {
+		return new SpelCommand();
+	}
+
+	@Bean
 	public XtermRSocketController xtermRSocketController() {
 		return new XtermRSocketController();
 	}

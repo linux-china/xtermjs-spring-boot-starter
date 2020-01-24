@@ -60,10 +60,14 @@ public class SpringBootStandardCommands {
 		if (env.getProperty("spring.application.name") != null) {
 			lines.add("Application name: " + env.getProperty("spring.application.name"));
 		}
+		if (env.getProperty("PID") != null) {
+			lines.add("PID: " + env.getProperty("PID"));
+		}
 		lines.add("Started Time: " + startedTime);
 		lines.add("Java Version: " + System.getProperty("java.version"));
 		lines.add("OS Name: " + System.getProperty("os.name"));
 		lines.add("OS Version: " + System.getProperty("os.version"));
+		lines.add("OS Arch: " + System.getProperty("os.arch"));
 		lines.add("Spring Boot Version: " + SpringBootVersion.getVersion());
 		// cpu + memory + disk
 		int mb = 1024 * 1024;
@@ -80,11 +84,17 @@ public class SpringBootStandardCommands {
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 			lines.add("IP: " + inetAddress.getHostAddress());
+			lines.add("Host: " + inetAddress.getHostName());
 		}
 		catch (Exception ignore) {
 
 		}
 		return linesToString(lines);
+	}
+
+	@ShellMethod("Display Classpath info")
+	public String classpath() {
+		return linesToString(Arrays.asList(System.getProperty("java.class.path").split("[:;]")));
 	}
 
 	@ShellMethod("Display beans info")

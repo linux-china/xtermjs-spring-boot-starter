@@ -178,7 +178,7 @@ public class CurlCommand {
 				});
 			}
 			return body;
-		}).timeout(Duration.ofSeconds(maxTime));
+		}).onErrorResume(error -> Mono.just(error.getMessage())).timeout(Duration.ofSeconds(maxTime));
 	}
 
 }

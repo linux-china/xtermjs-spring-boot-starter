@@ -12,21 +12,15 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.actuate.endpoint.web.annotation.WebEndpointDiscoverer;
 import org.springframework.boot.actuate.health.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import org.springframework.util.ClassUtils;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -63,16 +57,6 @@ public class SpringBootStandardCommands {
 
 	@Autowired
 	private WebEndpointDiscoverer endpointDiscoverer;
-
-	final ExpressionParser spelParser = new SpelExpressionParser();
-
-	private StandardEvaluationContext spelContext;
-
-	@PostConstruct
-	public void init() {
-		spelContext = new StandardEvaluationContext();
-		spelContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));
-	}
 
 	@ShellMethod("Display application info")
 	public String system() {
@@ -136,16 +120,6 @@ public class SpringBootStandardCommands {
 
 	@ShellMethod("Show Thread")
 	public String thread(@ShellOption(help = "Thread ID", defaultValue = "") Integer threadId) {
-		return "";
-	}
-
-	@ShellMethod("Execute SpEL")
-	public String spel(@ShellOption(help = "SpEL expression", defaultValue = "") String expressionText) {
-		Expression expression = spelParser.parseExpression(expressionText);
-		Object value = expression.getValue(spelContext);
-		if (value != null) {
-			return value.toString();
-		}
 		return "";
 	}
 

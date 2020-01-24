@@ -64,7 +64,9 @@ public class SpringBootStandardCommands {
 		if (env.getProperty("spring.application.name") != null) {
 			lines.add("Application name: " + env.getProperty("spring.application.name"));
 		}
-		lines.add("Shell: " + env.getProperty("SHELL"));
+		lines.add("User Home: " + env.getProperty("user.home"));
+		lines.add("Work Dir: " + env.getProperty("user.dir"));
+		lines.add("Shell: " + env.getProperty("SHELL", ""));
 		if (env.getProperty("PID") != null) {
 			lines.add("PID: " + env.getProperty("PID"));
 		}

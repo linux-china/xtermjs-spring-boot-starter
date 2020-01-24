@@ -48,12 +48,6 @@ public class SpringBootStandardCommandsTest {
 	}
 
 	@Test
-	public void testSpelCommand() {
-		Object result = shell.evaluate(() -> "spel @userService.findById(1)");
-		System.out.println(result);
-	}
-
-	@Test
 	public void testBeanCommand() {
 		Object result = shell.evaluate(() -> "bean userService");
 		System.out.println(result);

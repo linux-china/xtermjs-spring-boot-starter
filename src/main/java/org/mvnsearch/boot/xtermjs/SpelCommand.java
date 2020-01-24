@@ -1,5 +1,6 @@
 package org.mvnsearch.boot.xtermjs;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanExpressionContext;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -43,6 +44,7 @@ public class SpelCommand implements CustomizedCommand {
 	}
 
 	@Override
+	@Nullable
 	public Object execute(String expressionText) {
 		Expression expression;
 		if (expressionText.startsWith("#{")) {
@@ -51,7 +53,7 @@ public class SpelCommand implements CustomizedCommand {
 		else {
 			expression = spelParser.parseExpression(expressionText);
 		}
-        return expression.getValue(spelContext, rootObject);
+		return expression.getValue(spelContext, rootObject);
 	}
 
 }

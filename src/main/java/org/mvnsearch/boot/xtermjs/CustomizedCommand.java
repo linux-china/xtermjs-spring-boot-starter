@@ -11,6 +11,7 @@ public interface CustomizedCommand {
 
 	public String getName();
 
+	@Nullable
 	public Object execute(@Nullable String arguments);
 
 }

@@ -350,7 +350,12 @@ public class SpringBootStandardCommands {
 	}
 
 	public static String formatClassName(String classFullName) {
-		return classFullName.replaceAll("java.lang.([A-Z]\\w*)", "$1");
+		if (classFullName.contains("java.lang.")) {
+			return classFullName.replaceAll("java.lang.([A-Z]\\w*)", "$1");
+		}
+		else {
+			return classFullName;
+		}
 	}
 
 }

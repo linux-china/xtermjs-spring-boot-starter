@@ -128,8 +128,12 @@ public class SpringBootStandardCommands {
 	@ShellMethod("Display Classpath info")
 	public String classpath() {
 		List<String> lines = new ArrayList<>();
-		if (env.getProperty("CLASSPATH") != null) {
-			lines.addAll(Arrays.asList(env.getProperty("CLASSPATH").split(File.pathSeparator)));
+		String classPath = env.getProperty("CLASSPATH");
+		if (classPath == null || classPath.isEmpty()) {
+			classPath = ManagementFactory.getRuntimeMXBean().getClassPath();
+		}
+		if (classPath != null) {
+			lines.addAll(Arrays.asList(classPath.split(File.pathSeparator)));
 		}
 		else {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();

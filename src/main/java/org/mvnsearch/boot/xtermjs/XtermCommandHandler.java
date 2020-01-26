@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
+import org.mvnsearch.boot.xtermjs.commands.CustomizedCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;

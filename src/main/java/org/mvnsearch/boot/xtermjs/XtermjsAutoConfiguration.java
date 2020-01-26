@@ -1,7 +1,6 @@
 package org.mvnsearch.boot.xtermjs;
 
-import org.mvnsearch.boot.xtermjs.commands.JvmCommands;
-import org.mvnsearch.boot.xtermjs.commands.SystemCommands;
+import org.mvnsearch.boot.xtermjs.commands.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

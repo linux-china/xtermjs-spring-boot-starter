@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
+import org.mvnsearch.boot.xtermjs.commands.CommandsSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -22,21 +23,18 @@ import org.springframework.util.ClassUtils;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Spring Boot standard commands
+ * Spring commands: include spring framework, spring boot, spring cloud etc
  *
  * @author linux_china
  */
 @ShellComponent
-public class SpringBootStandardCommands {
+public class SpringCommands implements CommandsSupport {
 
 	private String startedTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSS'Z'").format(new Date());
 
@@ -59,7 +57,7 @@ public class SpringBootStandardCommands {
 	private WebEndpointDiscoverer endpointDiscoverer;
 
 	@ShellMethod("Display application info")
-	public String system() {
+	public String app() {
 		List<String> lines = new ArrayList<>();
 		if (env.getProperty("spring.application.name") != null) {
 			lines.add("Application name: " + env.getProperty("spring.application.name"));
@@ -95,50 +93,6 @@ public class SpringBootStandardCommands {
 		}
 		catch (Exception ignore) {
 
-		}
-		return linesToString(lines);
-	}
-
-	@ShellMethod("Java Options")
-	public String options() {
-		return linesToString(ManagementFactory.getRuntimeMXBean().getInputArguments());
-	}
-
-	@ShellMethod("Show Threads")
-	public String threads() {
-		String threadPattern = "%4s %5s %10s %8s %16s  %s";
-		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-		List<String> lines = new ArrayList<>();
-		lines.add(String.format(threadPattern, "ID", "Alive", "State", "Priority", "Group", "Name"));
-		threadSet.stream().map(thread -> {
-			return String.format(threadPattern, thread.getId(), thread.isAlive() ? 1 : 0, thread.getState().name(),
-					thread.getPriority(), (thread.getThreadGroup() == null ? "" : thread.getThreadGroup().getName()),
-					thread.getName());
-		}).forEach(lines::add);
-		lines.add("");
-		lines.add("Thread Count: " + (lines.size() - 1));
-		return linesToString(lines);
-	}
-
-	@ShellMethod("Show Thread")
-	public String thread(@ShellOption(help = "Thread ID", defaultValue = "") Integer threadId) {
-		return "";
-	}
-
-	@ShellMethod("Display Classpath info")
-	public String classpath() {
-		List<String> lines = new ArrayList<>();
-		String classPath = env.getProperty("CLASSPATH");
-		if (classPath == null || classPath.isEmpty()) {
-			classPath = ManagementFactory.getRuntimeMXBean().getClassPath();
-		}
-		if (classPath != null) {
-			lines.addAll(Arrays.asList(classPath.split(File.pathSeparator)));
-		}
-		else {
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			URL[] urls = ((URLClassLoader) cl).getURLs();
-			Arrays.stream(urls).map(URL::toString).forEach(lines::add);
 		}
 		return linesToString(lines);
 	}
@@ -337,10 +291,6 @@ public class SpringBootStandardCommands {
 				.retrieve().bodyToMono(String.class);
 	}
 
-	private static String linesToString(Collection<String> lines) {
-		return String.join("\n", lines);
-	}
-
 	private static String meterName(String name, List<Tag> tags) {
 		if (tags != null && tags.size() > 0) {
 			return tags.stream().map(tag -> tag.getKey() + ":" + tag.getValue())
@@ -358,15 +308,6 @@ public class SpringBootStandardCommands {
 			}
 		}
 		return name;
-	}
-
-	public static String formatClassName(String classFullName) {
-		if (classFullName.contains("java.lang.")) {
-			return classFullName.replaceAll("java.lang.([A-Z]\\w*)", "$1");
-		}
-		else {
-			return classFullName;
-		}
 	}
 
 }

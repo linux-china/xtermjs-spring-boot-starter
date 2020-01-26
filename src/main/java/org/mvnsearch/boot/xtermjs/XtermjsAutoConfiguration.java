@@ -1,5 +1,7 @@
 package org.mvnsearch.boot.xtermjs;
 
+import org.mvnsearch.boot.xtermjs.commands.JvmCommands;
+import org.mvnsearch.boot.xtermjs.commands.SystemCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +28,18 @@ public class XtermjsAutoConfiguration {
 	}
 
 	@Bean
-	public SpringBootStandardCommands springBootStandardCommands() {
-		return new SpringBootStandardCommands();
+	public SystemCommands systemCommands() {
+		return new SystemCommands();
+	}
+
+	@Bean
+	public JvmCommands jvmCommands() {
+		return new JvmCommands();
+	}
+
+	@Bean
+	public SpringCommands springBootStandardCommands() {
+		return new SpringCommands();
 	}
 
 	@Bean

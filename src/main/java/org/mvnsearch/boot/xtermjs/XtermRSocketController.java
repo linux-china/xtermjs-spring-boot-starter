@@ -35,10 +35,9 @@ public class XtermRSocketController extends XtermCommandHandler {
 		String appName = environment.getProperty("spring.application.name");
 		@Language("HTML")
 		String html = "<!doctype html>\n" + "<html lang=\"en\">\n" + "<head>\n" + "    <meta charset=\"UTF-8\">\n"
-				+ "    <title>Xterm</title>\n" + "    <style>\n" + "        html, body {\n"
-				+ "            height: 100%;\n" + "        }\n" + "    </style>\n" +
-                "</head>\n"
-                + "<body>\n" + "<xterm-console rsocket=\"" + path + "\" welcome=\"Xterm for "+appName+"\"></xterm-console>\n"
+				+ "    <title>Xterm for " + appName + "</title>\n" + "    <style>\n" + "        html, body {\n"
+				+ "            height: 100%;\n" + "        }\n" + "    </style>\n" + "</head>\n" + "<body>\n"
+				+ "<xterm-console rsocket=\"" + path + "\" welcome=\"Xterm for " + appName + "\"></xterm-console>\n"
 				+ "<script type=\"text/javascript\" src=\"/xterm.bundle.js\"></script></body>\n" + "</html>";
 		return html;
 	}

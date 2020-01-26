@@ -1,24 +1,22 @@
-package org.mvnsearch.boot.xtermjs.demo;
+package org.mvnsearch.boot.xtermjs.commands;
 
 import org.junit.jupiter.api.Test;
-import org.mvnsearch.boot.xtermjs.SpelCommand;
+import org.mvnsearch.boot.xtermjs.demo.DemoAppBaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * spel command test
  *
  * @author linux_china
  */
-@SpringBootTest
-public class SpelCommandTest {
+public class SpelCommandTest extends DemoAppBaseTestCase {
 
 	@Autowired
 	private SpelCommand spelCommand;
 
 	@Test
 	public void testSpelCommand() {
-		Object result = spelCommand.execute("#{ systemProperties['user.home'] }");
+		Object result = spelCommand.execute("Hello #{ systemProperties['user.home'] }");
 		System.out.println(result);
 	}
 

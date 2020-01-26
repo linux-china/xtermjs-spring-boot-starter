@@ -67,6 +67,11 @@ spring.rsocket.server.transport=websocket
 * spel: execute SpEL expression
 * actuator: display actuator information
 
+# How to development
+
+* Start Spring Boot App to supply xterm backend service
+* Start "npm run start" to start Webpack dev server for JavaScript development
+
 # References
 
 * Xterm.js Home: https://xtermjs.org/

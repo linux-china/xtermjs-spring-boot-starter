@@ -104,11 +104,15 @@ export class RSocketAddon {
                         }
                         break;
                 }
-            } else if (code === 21) { // Control+u to clear line
-                this.terminal.write("\r\x1B[K$");
-                this.commandLine = "";
             } else if (code < 32) { // Control
-
+                if (code === 21) { // Control+u to clear line
+                    this.terminal.write("\r\x1B[K$");
+                    this.commandLine = "";
+                } else if (code === 12) { //ctrl+l to clear screen
+                    this.clearScreen();
+                    this.terminal.write("\r\x1B[K$");
+                    this.commandLine = "";
+                }
             } else { // Visible
                 this.commandLine += data;
                 this.terminal.write(data);
@@ -125,8 +129,7 @@ export class RSocketAddon {
         if (this.commandLine.trim().length > 0) {
             this.history.push(this.commandLine.trim());
             if (this.commandLine === "clear") { //clear screen
-                this.terminal.clear();
-                this.terminal.reset();
+                this.clearScreen();
             } else if (this.commandLine === "exit" || this.commandLine === "quit") { //close window or tab
                 this.terminal.dispose();
                 this.rsocketClient.close();
@@ -135,6 +138,11 @@ export class RSocketAddon {
                 this.commandFlux.onNext({data: new Buffer(this.commandLine)});
             }
         }
+    }
+
+    clearScreen() {
+        this.terminal.clear();
+        this.terminal.reset();
     }
 
     //output remote result

@@ -1,43 +1,30 @@
-package org.mvnsearch.boot.xtermjs.demo;
+package org.mvnsearch.boot.xtermjs.commands;
 
 import org.junit.jupiter.api.Test;
+import org.mvnsearch.boot.xtermjs.demo.DemoAppBaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;
 
 /**
- * spring boot standard commands test
+ * Spring commands test
  *
  * @author linux_china
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SpringBootStandardCommandsTest {
+public class SpringCommandsTest extends DemoAppBaseTestCase {
 
 	@Autowired
 	private Shell shell;
 
 	@Test
-	public void testSystemCommand() {
-		Object result = shell.evaluate(() -> "system");
-		System.out.println(result);
-	}
-
-	@Test
-	public void testClasspath() {
-		Object result = shell.evaluate(() -> "classpath");
+	public void testAppCommand() {
+		Object result = shell.evaluate(() -> "app");
 		System.out.println(result);
 	}
 
 	@Test
 	public void testOptions() {
 		Object result = shell.evaluate(() -> "options");
-		System.out.println(result);
-	}
-
-	@Test
-	public void testThreads() {
-		Object result = shell.evaluate(() -> "threads");
 		System.out.println(result);
 	}
 

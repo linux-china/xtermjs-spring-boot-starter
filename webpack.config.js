@@ -44,5 +44,10 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.json', '.wasm', '.mjs']
+    },
+    devServer: {
+        contentBase: [path.join(__dirname, 'target/classes/META-INF/resources'), path.join(__dirname, 'src/main/frontend')],
+        compress: true,
+        port: 9000
     }
 };

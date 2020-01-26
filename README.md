@@ -58,3 +58,9 @@ spring.rsocket.server.transport=websocket
 * threads: display threads
 * actuator: display actuator information
 * curl: curl command for http operation
+
+# References
+
+* Xterm.js Home: https://xtermjs.org/
+* Spring Shell Docs: https://docs.spring.io/spring-shell/docs/current/reference/htmlsingle/
+* xterm.js + local echo https://www.linkedin.com/pulse/xtermjs-local-echo-ioannis-charalampidis

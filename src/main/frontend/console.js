@@ -9,6 +9,7 @@ class XtermConsole extends HTMLElement {
     constructor() {
         super();
         let rsocketUrl = this.getAttribute('rsocket');
+        let welcome = this.getAttribute('welcome');
         if (rsocketUrl.startsWith("/")) { //without schema and host
             let schema = "ws://";
             if (document.location.protocol.startsWith("https")) {
@@ -32,7 +33,7 @@ class XtermConsole extends HTMLElement {
         term.open(container);
         fitAddon.fit();
         //welcome banner
-        let hint = title || 'Welcome xterm with RSocket.';
+        let hint = welcome || 'Welcome xterm with RSocket.';
         term.writeln(hint);
         term.prompt();
         term.focus();

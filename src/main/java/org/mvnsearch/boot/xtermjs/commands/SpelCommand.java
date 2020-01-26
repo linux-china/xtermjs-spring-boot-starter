@@ -1,4 +1,4 @@
-package org.mvnsearch.boot.xtermjs;
+package org.mvnsearch.boot.xtermjs.commands;
 
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;

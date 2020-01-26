@@ -1,11 +1,10 @@
-package org.mvnsearch.boot.xtermjs;
+package org.mvnsearch.boot.xtermjs.commands;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
-import org.mvnsearch.boot.xtermjs.commands.CommandsSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

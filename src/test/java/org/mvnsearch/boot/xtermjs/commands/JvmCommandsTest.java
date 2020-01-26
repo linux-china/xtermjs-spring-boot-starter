@@ -12,8 +12,13 @@ public class JvmCommandsTest {
 	private JvmCommands jvmCommands = new JvmCommands();
 
 	@Test
-	public void testThreads() {
+	public void testClasspath() {
 		System.out.println(jvmCommands.classpath());
+	}
+
+	@Test
+	public void testThreads() {
+		System.out.println(jvmCommands.threads());
 	}
 
 }

@@ -46,18 +46,26 @@ spring.rsocket.server.transport=websocket
 
 # Application commands
 
+### System
+
+* date
+* curl: curl command for http operation
+
+### JVM commands
+
+* threads: display threads
+* classpath: display classpath
+
+### Spring Commands
 * Help: Spring Shell help
-* system: display system information
+* app: display app information
 * beans: display all spring beans
 * bean: display bean definition
 * profiles: display profile
 * metrics: display metrics
 * health: display health information
-* classpath: display classpath
 * spel: execute SpEL expression
-* threads: display threads
 * actuator: display actuator information
-* curl: curl command for http operation
 
 # References
 

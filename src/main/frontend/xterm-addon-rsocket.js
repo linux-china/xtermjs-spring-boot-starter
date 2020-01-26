@@ -75,7 +75,7 @@ export class RSocketAddon {
                 this.triggerCommand();
                 this.terminal.prompt();
                 this.commandLine = '';
-            } else if (code === 127) { //backspace
+            } else if (code === 127 || code === 8) { //backspace
                 if (this.commandLine.length > 0) {
                     let lastCode = this.commandLine.charCodeAt(this.commandLine.length - 1);
                     if (lastCode > 255) { //utf-8 character
@@ -85,7 +85,7 @@ export class RSocketAddon {
                     }
                     this.commandLine = this.commandLine.substr(0, this.commandLine.length - 1);
                 }
-            } else if (code === 0x1b) {
+            } else if (code === 27) { // escape
                 switch (data.substr(1)) {
                     case "[A": // Up arrow
                         this.terminal.write("\r\x1B[K$");

@@ -1,8 +1,8 @@
-package org.mvnsearch.boot.xtermjs.demo;
+package org.mvnsearch.boot.xtermjs.commands;
 
 import org.junit.jupiter.api.Test;
+import org.mvnsearch.boot.xtermjs.demo.DemoAppBaseTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;
 
@@ -11,8 +11,7 @@ import reactor.core.publisher.Mono;
  *
  * @author linux_china
  */
-@SpringBootTest
-public class CurlCommandTest {
+public class CurlCommandTest extends DemoAppBaseTestCase {
 
 	@Autowired
 	private Shell shell;

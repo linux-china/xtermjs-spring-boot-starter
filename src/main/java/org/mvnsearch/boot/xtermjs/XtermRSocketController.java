@@ -36,9 +36,9 @@ public class XtermRSocketController extends XtermCommandHandler {
 		@Language("HTML")
 		String html = "<!doctype html>\n" + "<html lang=\"en\">\n" + "<head>\n" + "    <meta charset=\"UTF-8\">\n"
 				+ "    <title>Xterm</title>\n" + "    <style>\n" + "        html, body {\n"
-				+ "            height: 100%;\n" + "        }\n" + "    </style>\n" + "    <script>\n"
-				+ "        var title =\"Xterm for " + appName + "\";\n" + "    " + "</script>\n" + "</head>\n"
-				+ "<body>\n" + "<xterm-console rsocket=\"" + path + "\"></xterm-console>\n"
+				+ "            height: 100%;\n" + "        }\n" + "    </style>\n" +
+                "</head>\n"
+                + "<body>\n" + "<xterm-console rsocket=\"" + path + "\" welcome=\"Xterm for "+appName+"\"></xterm-console>\n"
 				+ "<script type=\"text/javascript\" src=\"/xterm.bundle.js\"></script></body>\n" + "</html>";
 		return html;
 	}

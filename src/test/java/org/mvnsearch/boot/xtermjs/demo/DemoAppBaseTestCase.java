@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * @author linux_china
  */
-@SpringBootTest(classes = XtermDemoApp.class)
+@SpringBootTest(classes = XtermDemoApp.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class DemoAppBaseTestCase {
 
 }

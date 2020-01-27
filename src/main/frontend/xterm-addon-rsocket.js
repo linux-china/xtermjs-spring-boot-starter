@@ -19,6 +19,8 @@ export class RSocketAddon {
     constructor(url, options) {
         // current command line
         this.commandLine = '';
+        // context name for commands
+        this.context = '';
         // commands history
         this.history = new HistoryController(100);
         // command flux
@@ -39,6 +41,9 @@ export class RSocketAddon {
 
     activate(terminal) {
         this.terminal = terminal;
+        this.terminal.prompt = () => {
+            this.terminal.write(this.promptText());
+        };
         //attach key listener to parse command line
         this.attachKeyListener();
         //attach executeLine for terminal
@@ -127,16 +132,31 @@ export class RSocketAddon {
             return;
         }
         if (this.commandLine.trim().length > 0) {
+            let parts = this.commandLine.split(/\s/, 2);
+            let contextPrefix = this.context === "" ? "" : this.context + "-";
+            let command = parts[0];
             this.history.push(this.commandLine.trim());
-            if (this.commandLine === "clear") { //clear screen
+            if (command === "clear") { //clear screen
                 this.clearScreen();
-            } else if (this.commandLine === "exit" || this.commandLine === "quit") { //close window or tab
+            } else if (command === "use") { //use context
+                this.context = parts[1].trim();
+            } else if (command === "reset" || command === "unuse") { //clear context
+                this.context = "";
+            } else if (command === "exit" || command === "quit") { //close window or tab
                 this.terminal.dispose();
                 this.rsocketClient.close();
                 window.close();
             } else {
-                this.commandFlux.onNext({data: new Buffer(this.commandLine)});
+                this.commandFlux.onNext({data: new Buffer(contextPrefix + this.commandLine)});
             }
+        }
+    }
+
+    promptText() {
+        if (this.context) {
+            return '\r\n[' + this.context + ']$';
+        } else {
+            return '\r\n$';
         }
     }
 
@@ -145,10 +165,15 @@ export class RSocketAddon {
         this.terminal.reset();
     }
 
+    clearLine() {
+        this.terminal.write('\b \b'.repeat(byteLength(this.promptText())));
+        this.commandLine = "";
+    }
+
     //output remote result
     outputRemoteResult(payload) {
         if (payload.data != null && payload.data.length > 0) {
-            this.terminal.write('\b \b');
+            this.clearLine();
             this.terminal.write(payload.data);
             this.terminal.prompt();
         }
@@ -212,4 +237,16 @@ class HistoryController {
         this.cursor = idx;
         return this.entries[idx];
     }
+}
+
+function byteLength(str) {
+    // returns the byte length of an utf8 string
+    let length = str.length;
+    for (let i = str.length - 1; i >= 0; i--) {
+        let code = str.charCodeAt(i);
+        if (code > 0x7f && code <= 0x7ff) length++;
+        else if (code > 0x7ff && code <= 0xffff) length += 2;
+        if (code >= 0xDC00 && code <= 0xDFFF) i--; //trail surrogate
+    }
+    return length;
 }

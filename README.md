@@ -19,11 +19,27 @@ Supply a web terminal to manage Spring Boot app. Why?
 * Edit pom.xml and add following dependency:
 
 ```xml
-<dependency>
-    <groupId>org.mvnsearch</groupId>
-    <artifactId>xtermjs-spring-boot-starter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-</dependency>    
+<dependencies>
+    <dependency>
+        <groupId>org.mvnsearch</groupId>
+        <artifactId>xtermjs-spring-boot-starter</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency> 
+</dependencies>
+
+
+<repositories>
+    <repository>
+      <id>oss.sonatype.org-snapshot</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+</repositories>   
 ```
 
 * Open application.properties and add rsocket configuration.

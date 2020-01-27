@@ -17,8 +17,8 @@ public class RedisCommandsTest extends DemoAppBaseTestCase {
 
 	@Test
 	public void testGet() {
-        Object result = shell.evaluate(() -> "redis-get name");
- 		System.out.println(result);
+		Object result = shell.evaluate(() -> "redis-get name");
+		System.out.println(result);
 	}
 
 }

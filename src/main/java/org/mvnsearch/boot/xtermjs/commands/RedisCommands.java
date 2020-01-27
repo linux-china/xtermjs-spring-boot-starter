@@ -20,14 +20,15 @@ public class RedisCommands {
 	private RedisTemplate redisTemplate;
 
 	@ShellMethod(value = "Redis Get")
-	public String redisGet(@ShellOption(help = "Key", defaultValue = "") String key) {
-		return "redis value";
+	public Object redisGet(@ShellOption(help = "Key", defaultValue = "") String key) {
+		return redisTemplate.opsForValue().get(key);
 	}
 
 	@ShellMethod("Redis Set")
 	public String redisSet(@ShellOption(help = "Redis Key", defaultValue = "") String key,
 			@ShellOption(help = "Value", defaultValue = "") String value) {
-		return "";
+		redisTemplate.opsForValue().set(key, value);
+		return "OK";
 	}
 
 	@ShellMethodAvailability

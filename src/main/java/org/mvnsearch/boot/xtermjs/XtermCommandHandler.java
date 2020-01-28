@@ -12,10 +12,7 @@ import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Xterm command handler: execute the commands from xterm.js
@@ -31,6 +28,8 @@ public class XtermCommandHandler {
 
 	@Autowired
 	public List<CustomizedCommand> customizedCommands;
+
+	private List<String> stringOutputClasses = Arrays.asList("java.util.Date", "java.lang.Boolean", "java.lang.Void");
 
 	private Map<String, CustomizedCommand> customizedCommandMap = new HashMap<>();
 
@@ -108,7 +107,16 @@ public class XtermCommandHandler {
 		if (classFullName == null) {
 			classFullName = object.getClass().getSimpleName();
 		}
-		if (object instanceof CharSequence || classFullName.matches("java.lang.([A-Z]\\w*)")) {
+		if (object instanceof CharSequence || object instanceof Number || object instanceof Throwable) {
+			return object.toString();
+		}
+		else if (stringOutputClasses.contains(classFullName)) {
+			return object.toString();
+		}
+		else if (classFullName.startsWith("java.lang.") && classFullName.matches("java.lang.([A-Z]\\w*)")) {
+			return object.toString();
+		}
+		else if (classFullName.startsWith("java.time.")) {
 			return object.toString();
 		}
 		else {

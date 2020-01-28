@@ -12,6 +12,7 @@ import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -104,6 +105,16 @@ public class XtermCommandHandler {
 	public String formatObject(Object object) {
 		// to string or json output
 		String classFullName = object.getClass().getCanonicalName();
+		// toString() declared
+		try {
+			Method toStringMethod = object.getClass().getDeclaredMethod("toString");
+			if (toStringMethod != null) {
+				return object.toString();
+			}
+		}
+		catch (Exception ignore) {
+
+		}
 		if (classFullName == null) {
 			classFullName = object.getClass().getSimpleName();
 		}

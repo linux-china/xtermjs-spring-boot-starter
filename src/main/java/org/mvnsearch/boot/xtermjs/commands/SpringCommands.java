@@ -96,6 +96,11 @@ public class SpringCommands implements CommandsSupport {
 		return linesToString(lines);
 	}
 
+	@ShellMethod("Execute SpEL")
+	public String spel() {
+		return "Not implemented";
+	}
+
 	@ShellMethod("Display beans info")
 	public String beans() {
 		List<String> lines = new ArrayList<>(Arrays.asList(beanFactory.getBeanDefinitionNames()));

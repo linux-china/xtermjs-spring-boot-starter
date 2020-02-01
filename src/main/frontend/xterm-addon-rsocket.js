@@ -117,6 +117,8 @@ export class RSocketAddon {
                     this.clearScreen();
                     this.terminal.write("\r\x1B[K$");
                     this.commandLine = "";
+                } else if (code === 3) { //ctrl + c
+                    //stop the task
                 }
             } else { // Visible
                 this.commandLine += data;

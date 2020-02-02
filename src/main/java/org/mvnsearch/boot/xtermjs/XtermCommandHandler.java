@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import org.jline.reader.impl.DefaultParser;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.mvnsearch.boot.xtermjs.commands.CustomizedCommand;
@@ -12,6 +13,8 @@ import org.springframework.shell.Shell;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -25,10 +28,15 @@ public class XtermCommandHandler {
 	@Autowired
 	private Shell shell;
 
-	private ObjectMapper objectMapper;
-
 	@Autowired
 	public List<CustomizedCommand> customizedCommands;
+
+	private ObjectMapper objectMapper;
+
+	/**
+	 * command line parser
+	 */
+	private DefaultParser lineParser = new DefaultParser();
 
 	private List<String> stringOutputClasses = Arrays.asList("java.util.Date", "java.lang.Boolean", "java.lang.Void");
 
@@ -60,8 +68,12 @@ public class XtermCommandHandler {
 		if (customizedCommandMap.containsKey(command)) {
 			result = customizedCommandMap.get(command).execute(arguments);
 		}
-		else {
+		else if (this.shell.listCommands().containsKey(command)) {
 			result = this.shell.evaluate(() -> commandLine);
+		}
+		else {
+			//result = executeOsCommand(commandLine);
+			result = new Exception("Command not found!");
 		}
 		String textOutput;
 		if (result == null) {
@@ -90,6 +102,23 @@ public class XtermCommandHandler {
 		}
 		else {
 			return Mono.just(textOutput);
+		}
+	}
+
+	public Object executeOsCommand(String commandLine) {
+		try {
+			Process p = new ProcessBuilder(lineParser.parse(commandLine, 0).words()).start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			StringBuilder builder = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+				builder.append(System.getProperty("line.separator"));
+			}
+			return builder.toString();
+		}
+		catch (Exception e) {
+			return e;
 		}
 	}
 

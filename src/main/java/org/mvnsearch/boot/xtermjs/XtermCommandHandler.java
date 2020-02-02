@@ -72,7 +72,7 @@ public class XtermCommandHandler {
 			result = this.shell.evaluate(() -> commandLine);
 		}
 		else {
-			//result = executeOsCommand(commandLine);
+			// result = executeOsCommand(commandLine);
 			result = new Exception("Command not found!");
 		}
 		String textOutput;
@@ -109,13 +109,12 @@ public class XtermCommandHandler {
 		try {
 			Process p = new ProcessBuilder(lineParser.parse(commandLine, 0).words()).start();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			StringBuilder builder = new StringBuilder();
+			List<String> lines = new ArrayList<>();
 			String line;
 			while ((line = reader.readLine()) != null) {
-				builder.append(line);
-				builder.append(System.getProperty("line.separator"));
+				lines.add(line);
 			}
-			return builder.toString();
+			return lines;
 		}
 		catch (Exception e) {
 			return e;

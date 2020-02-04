@@ -65,15 +65,20 @@ public class XtermCommandHandler {
 			command = commandLine;
 		}
 		Object result;
-		if (customizedCommandMap.containsKey(command)) {
-			result = customizedCommandMap.get(command).execute(arguments);
+		try {
+			if (customizedCommandMap.containsKey(command)) {
+				result = customizedCommandMap.get(command).execute(arguments);
+			}
+			else if (this.shell.listCommands().containsKey(command)) {
+				result = this.shell.evaluate(() -> commandLine);
+			}
+			else {
+				// result = executeOsCommand(commandLine);
+				result = new Exception("Command not found!");
+			}
 		}
-		else if (this.shell.listCommands().containsKey(command)) {
-			result = this.shell.evaluate(() -> commandLine);
-		}
-		else {
-			// result = executeOsCommand(commandLine);
-			result = new Exception("Command not found!");
+		catch (Exception e) {
+			result = e;
 		}
 		String textOutput;
 		if (result == null) {
@@ -107,7 +112,8 @@ public class XtermCommandHandler {
 
 	public Object executeOsCommand(String commandLine) {
 		try {
-			Process p = new ProcessBuilder(lineParser.parse(commandLine, 0).words()).start();
+			ProcessBuilder processBuilder = new ProcessBuilder(lineParser.parse(commandLine, 0).words());
+			Process p = processBuilder.start();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			List<String> lines = new ArrayList<>();
 			String line;

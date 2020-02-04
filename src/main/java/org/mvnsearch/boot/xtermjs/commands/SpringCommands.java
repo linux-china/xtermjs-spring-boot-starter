@@ -3,6 +3,7 @@ package org.mvnsearch.boot.xtermjs.commands;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -23,6 +25,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -276,6 +279,29 @@ public class SpringCommands implements CommandsSupport {
 			return "Active Profiles: [" + String.join(",", profiles) + "]";
 		}
 		return "No active profiles";
+	}
+
+	@ShellMethod("Display logfile")
+	public List<String> log() throws Exception {
+		String loggingFilePath = env.getProperty("logging.file.path");
+		String loggingFileName = env.getProperty("logging.file.name");
+		if (loggingFilePath == null || loggingFileName == null) {
+			throw new Exception("Missing 'logging.file.name' or 'logging.file.path' properties");
+		}
+		File loggingFile = new File(loggingFilePath, loggingFileName);
+		if (!loggingFile.exists()) {
+			throw new Exception("Logging file not found: " + loggingFile.getAbsolutePath());
+		}
+		ReversedLinesFileReader object = new ReversedLinesFileReader(loggingFile, StandardCharsets.UTF_8);
+		List<String> lines = new ArrayList<>();
+		for (int i = 0; i < 100; i++) {
+			String line = object.readLine();
+			if (line == null)
+				break;
+			lines.add(line);
+		}
+		Collections.reverse(lines);
+		return lines;
 	}
 
 	@ShellMethod("Display actuator")

@@ -19,6 +19,7 @@ export class RSocketAddon {
     constructor(url, options) {
         // current command line
         this.commandLine = '';
+        this.path = '';
         // context name for commands
         this.context = '';
         // commands history
@@ -62,7 +63,7 @@ export class RSocketAddon {
             //first payload with routing key
             this.commandFlux.onNext(
                     {
-                        data: new Buffer(''),
+                        data: new Buffer('cd'),
                         metadata: encodeAndAddWellKnownMetadata(
                                 Buffer.alloc(0),
                                 MESSAGE_RSOCKET_ROUTING,
@@ -140,6 +141,9 @@ export class RSocketAddon {
             this.history.push(this.commandLine.trim());
             if (command === "clear") { //clear screen
                 this.clearScreen();
+            } else if (command === "pwd") { //use context
+                this.terminal.writeln("");
+                this.terminal.write(this.path);
             } else if (command === "use") { //use context
                 this.context = parts[1].trim();
             } else if (command === "reset" || command === "unuse") { //clear context
@@ -175,9 +179,14 @@ export class RSocketAddon {
     //output remote result
     outputRemoteResult(payload) {
         if (payload.data != null && payload.data.length > 0) {
-            this.clearLine();
-            this.terminal.write(payload.data);
-            this.terminal.prompt();
+            let resultText = new TextDecoder("utf-8").decode(payload.data);
+            if (resultText.startsWith("$path:")) {
+                this.path = resultText.replace("$path:", "");
+            } else {
+                this.clearLine();
+                this.terminal.write(resultText);
+                this.terminal.prompt();
+            }
         }
     }
 
@@ -210,7 +219,7 @@ class HistoryController {
         // Keep track of entries
         this.entries.push(entry);
         if (this.entries.length > this.size) {
-            this.entries.pop(0);
+            this.entries.pop();
         }
         this.cursor = this.entries.length;
     }

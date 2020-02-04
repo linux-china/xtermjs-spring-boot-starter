@@ -113,6 +113,7 @@ public class XtermCommandHandler {
 	public Object executeOsCommand(String commandLine) {
 		try {
 			ProcessBuilder processBuilder = new ProcessBuilder(lineParser.parse(commandLine, 0).words());
+            processBuilder.redirectErrorStream(true);
 			Process p = processBuilder.start();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			List<String> lines = new ArrayList<>();

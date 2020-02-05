@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import org.jetbrains.annotations.NotNull;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -73,8 +75,8 @@ public class XtermCommandHandler {
 				result = this.shell.evaluate(() -> commandLine);
 			}
 			else {
-				// result = executeOsCommand(commandLine);
-				result = new Exception("Command not found!");
+				result = executeOsCommand(commandLine);
+				// result = new Exception("Command not found!");
 			}
 		}
 		catch (Exception e) {
@@ -84,19 +86,10 @@ public class XtermCommandHandler {
 		if (result == null) {
 			textOutput = "";
 		}
-		else if (result instanceof Exception) {
-			textOutput = new AttributedString(result.toString(),
-					AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAnsi();
-		}
-		else if (result instanceof AttributedString) {
-			textOutput = ((AttributedString) result).toAnsi();
-		}
-		else if (result instanceof Collection) {
-			textOutput = String.join("\r\n", (Collection) result);
-		}
 		else if (result instanceof Mono) {
-			return ((Mono<String>) result).map(this::formatObject).map(this::formatLineBreak).onErrorReturn("")
-					.defaultIfEmpty("");
+			return ((Mono<Object>) result).map(this::formatObject).map(this::formatLineBreak).onErrorResume(error -> {
+				return Mono.just(formatObject(error));
+			}).defaultIfEmpty("");
 		}
 		else {
 			textOutput = formatObject(result);
@@ -110,22 +103,26 @@ public class XtermCommandHandler {
 		}
 	}
 
-	public Object executeOsCommand(String commandLine) {
-		try {
-			ProcessBuilder processBuilder = new ProcessBuilder(lineParser.parse(commandLine, 0).words());
-            processBuilder.redirectErrorStream(true);
-			Process p = processBuilder.start();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			List<String> lines = new ArrayList<>();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				lines.add(line);
+	public Mono<Object> executeOsCommand(String commandLine) {
+		return Mono.deferWithContext(context -> {
+			try {
+				ProcessBuilder processBuilder = new ProcessBuilder(lineParser.parse(commandLine, 0).words());
+				processBuilder.redirectErrorStream(true);
+				processBuilder.directory(new File((String) context.get("path")));
+				Process p = processBuilder.start();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				List<String> lines = new ArrayList<>();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					lines.add(line);
+				}
+				return Mono.just(lines);
 			}
-			return lines;
-		}
-		catch (Exception e) {
-			return e;
-		}
+			catch (Exception e) {
+				return Mono.error(e);
+			}
+		});
+
 	}
 
 	public String formatLineBreak(String textOutput) {
@@ -137,40 +134,52 @@ public class XtermCommandHandler {
 		}
 	}
 
-	public String formatObject(Object object) {
-		// to string or json output
-		String classFullName = object.getClass().getCanonicalName();
-		// toString() declared
-		try {
-			Method toStringMethod = object.getClass().getDeclaredMethod("toString");
-			if (toStringMethod != null) {
-				return object.toString();
-			}
+	public String formatObject(@NotNull Object object) {
+		if (object instanceof Exception) {
+			return new AttributedString(((Exception) object).getMessage(),
+					AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAnsi();
 		}
-		catch (Exception ignore) {
-
+		else if (object instanceof AttributedString) {
+			return ((AttributedString) object).toAnsi();
 		}
-		if (classFullName == null) {
-			classFullName = object.getClass().getSimpleName();
-		}
-		if (object instanceof CharSequence || object instanceof Number || object instanceof Throwable) {
+		else if (object instanceof CharSequence || object instanceof Number || object instanceof Throwable) {
 			return object.toString();
 		}
-		else if (stringOutputClasses.contains(classFullName)) {
-			return object.toString();
-		}
-		else if (classFullName.startsWith("java.lang.") && classFullName.matches("java.lang.([A-Z]\\w*)")) {
-			return object.toString();
-		}
-		else if (classFullName.startsWith("java.time.")) {
-			return object.toString();
+		else if (object instanceof Collection) {
+			return String.join("\r\n", (Collection) object);
 		}
 		else {
+			// to string or json output
+			String classFullName = object.getClass().getCanonicalName();
+			// toString() declared
 			try {
-				return "Class: " + classFullName + "\n" + objectMapper.writeValueAsString(object);
+				Method toStringMethod = object.getClass().getDeclaredMethod("toString");
+				if (toStringMethod != null) {
+					return object.toString();
+				}
 			}
 			catch (Exception ignore) {
+
+			}
+			if (classFullName == null) {
+				classFullName = object.getClass().getSimpleName();
+			}
+			if (stringOutputClasses.contains(classFullName)) {
 				return object.toString();
+			}
+			else if (classFullName.startsWith("java.lang.") && classFullName.matches("java.lang.([A-Z]\\w*)")) {
+				return object.toString();
+			}
+			else if (classFullName.startsWith("java.time.")) {
+				return object.toString();
+			}
+			else {
+				try {
+					return "Class: " + classFullName + "\n" + objectMapper.writeValueAsString(object);
+				}
+				catch (Exception ignore) {
+					return object.toString();
+				}
 			}
 		}
 	}

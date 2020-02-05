@@ -13,43 +13,44 @@ import java.util.stream.Stream;
  * @author linux_china
  */
 public class MutableContext implements Context {
-    HashMap<Object, Object> holder = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
-    @NotNull
-    @Override
-    public <T> T get(@NotNull Object key) {
-        return (T) holder.get(key);
-    }
+	HashMap<Object, Object> holder = new HashMap<>();
 
-    @Override
-    public boolean hasKey(@NotNull Object key) {
-        return holder.containsKey(key);
-    }
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public <T> T get(@NotNull Object key) {
+		return (T) holder.get(key);
+	}
 
-    @NotNull
-    @Override
-    public Context put(@NotNull Object key, @NotNull Object value) {
-        holder.put(key, value);
-        return this;
-    }
+	@Override
+	public boolean hasKey(@NotNull Object key) {
+		return holder.containsKey(key);
+	}
 
-    @NotNull
-    @Override
-    public Context delete(@NotNull Object key) {
-        holder.remove(key);
-        return this;
-    }
+	@NotNull
+	@Override
+	public Context put(@NotNull Object key, @NotNull Object value) {
+		holder.put(key, value);
+		return this;
+	}
 
-    @Override
-    public int size() {
-        return holder.size();
-    }
+	@NotNull
+	@Override
+	public Context delete(@NotNull Object key) {
+		holder.remove(key);
+		return this;
+	}
 
-    @NotNull
-    @Override
-    public Stream<Map.Entry<Object, Object>> stream() {
-        return holder.entrySet().stream();
-    }
+	@Override
+	public int size() {
+		return holder.size();
+	}
+
+	@NotNull
+	@Override
+	public Stream<Map.Entry<Object, Object>> stream() {
+		return holder.entrySet().stream();
+	}
 
 }

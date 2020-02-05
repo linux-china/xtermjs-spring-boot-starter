@@ -5,10 +5,13 @@ import org.intellij.lang.annotations.Subst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import reactor.core.publisher.Flux;
+
+import java.io.File;
 
 /**
  * xterm rsocket controller
@@ -22,8 +25,11 @@ public class XtermRSocketController extends XtermCommandHandler {
 	private Environment environment;
 
 	@MessageMapping("xterm.shell")
-	public Flux<String> shell(Flux<String> commands) {
-		return commands.filter(data -> !data.trim().isEmpty()).flatMap(this::executeCommand);
+	public Flux<String> shell(Flux<String> commands, RSocketRequester rsocketRequester) {
+		MutableContext mutableContext = new MutableContext();
+		mutableContext.put("path", new File(".").getAbsolutePath());
+		return commands.filter(data -> !data.trim().isEmpty()).flatMap(this::executeCommand)
+				.subscriberContext(mutableContext::putAll);
 	}
 
 	@GetMapping(value = "/xterm", produces = "text/html; charset=utf-8")

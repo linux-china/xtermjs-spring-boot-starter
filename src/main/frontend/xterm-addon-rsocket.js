@@ -17,6 +17,7 @@ const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 export class RSocketAddon {
 
     constructor(url, options) {
+        this.url = url;
         // current command line
         this.commandLine = '';
         this.path = '';
@@ -56,7 +57,9 @@ export class RSocketAddon {
             this.rsocket = rsocket;
             rsocket.requestChannel(this.commandFlux).subscribe({
                 onComplete: () => console.log('Terminal completed'),
-                onError: error => console.log(`Communication error:${error.message}`),
+                onError: error => {
+                    this.errorDisplay(`Communication error:${error.message}`);
+                },
                 onNext: payload => this.outputRemoteResult(payload),
                 onSubscribe: sub => sub.request(maxRSocketRequestN),
             });
@@ -73,14 +76,19 @@ export class RSocketAddon {
         });
     }
 
+    errorDisplay(errorMsg) {
+        this.commandLine = "";
+        this.terminal.writeln("");
+        this.terminal.write(errorMsg);
+        this.terminal.prompt();
+    }
+
     attachKeyListener() {
         //term key event for Input & Enter & Backspace
         this.terminal.onData((data) => {
             let code = data.charCodeAt(0);
             if (code === 13) { // enter
                 this.triggerCommand();
-                this.terminal.prompt();
-                this.commandLine = '';
             } else if (code === 127 || code === 8) { //backspace
                 if (this.commandLine.length > 0) {
                     let lastCode = this.commandLine.charCodeAt(this.commandLine.length - 1);
@@ -130,10 +138,6 @@ export class RSocketAddon {
 
     // trigger command execute
     triggerCommand() {
-        if (this.rsocket == null) {  //rsocket not available
-            this.terminal.write('\r\n\u001b[31mFailed to connect RSocket backend, please check your service! \u001b[39m');
-            return;
-        }
         if (this.commandLine.trim().length > 0) {
             let parts = this.commandLine.split(/\s/, 2);
             let contextPrefix = this.context === "" ? "" : this.context + "-";
@@ -141,19 +145,33 @@ export class RSocketAddon {
             this.history.push(this.commandLine.trim());
             if (command === "clear") { //clear screen
                 this.clearScreen();
+                this.commandLine = "";
+                this.terminal.write(this.promptText().substring(2))
             } else if (command === "pwd") { //use context
+                this.commandLine = "";
                 this.terminal.writeln("");
                 this.terminal.write(this.path);
+                this.terminal.prompt();
             } else if (command === "use") { //use context
+                this.commandLine = "";
                 this.context = parts[1].trim();
+                this.terminal.prompt();
             } else if (command === "reset" || command === "unuse") { //clear context
                 this.context = "";
+                this.commandLine = "";
+                this.terminal.prompt();
             } else if (command === "exit" || command === "quit") { //close window or tab
+                this.commandLine = "";
                 this.terminal.dispose();
                 this.rsocketClient.close();
                 window.close();
-            } else {
-                this.commandFlux.onNext({data: new Buffer(contextPrefix + this.commandLine)});
+            } else { //send command to backend
+                if (this.rsocket == null) {  //rsocket not available
+                    let errorMsg = '\u001b[31mFailed to connect RSocket backend(' + this.url + '), please check your service! \u001b[39m';
+                    this.errorDisplay(errorMsg);
+                } else {
+                    this.commandFlux.onNext({data: new Buffer(contextPrefix + this.commandLine)});
+                }
             }
         }
     }
@@ -183,8 +201,11 @@ export class RSocketAddon {
             if (resultText.startsWith("$path:")) {
                 this.path = resultText.replace("$path:", "");
             } else {
-                this.clearLine();
+                this.terminal.writeln("");
                 this.terminal.write(resultText);
+            }
+            if (this.commandLine !== "") {
+                this.commandLine = '';
                 this.terminal.prompt();
             }
         }

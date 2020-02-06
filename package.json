@@ -30,7 +30,7 @@
     "rsocket-flowable": "^0.0.14",
     "rsocket-types": "^0.0.16",
     "rsocket-websocket-client": "0.0.19",
-    "xterm": "^4.3.0",
+    "xterm": "^4.4.0",
     "xterm-addon-fit": "^0.3.0",
     "xterm-addon-web-links": "^0.2.1"
   },
@@ -47,6 +47,6 @@
     "style-loader": "^1.1.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.2"
+    "webpack-dev-server": "^3.10.3"
   }
 }

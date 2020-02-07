@@ -1,5 +1,6 @@
 package org.mvnsearch.boot.xtermjs.commands;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanExpressionContext;
@@ -21,39 +22,41 @@ import javax.annotation.PostConstruct;
  */
 public class SpelCommand implements CustomizedCommand {
 
-	@Autowired
-	private ConfigurableListableBeanFactory beanFactory;
+    @Autowired
+    private ConfigurableListableBeanFactory beanFactory;
 
-	final ExpressionParser spelParser = new SpelExpressionParser();
+    final ExpressionParser spelParser = new SpelExpressionParser();
 
-	private StandardEvaluationContext spelContext;
+    private StandardEvaluationContext spelContext;
 
-	private BeanExpressionContext rootObject;
+    private BeanExpressionContext rootObject;
 
-	@PostConstruct
-	public void init() {
-		this.spelContext = new StandardEvaluationContext();
-		this.spelContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));
-		this.spelContext.addPropertyAccessor(new BeanExpressionContextAccessor());
-		this.rootObject = new BeanExpressionContext(beanFactory, null);
-	}
+    @PostConstruct
+    public void init() {
+        this.spelContext = new StandardEvaluationContext();
+        this.spelContext.setBeanResolver(new BeanFactoryResolver(this.beanFactory));
+        this.spelContext.addPropertyAccessor(new BeanExpressionContextAccessor());
+        this.rootObject = new BeanExpressionContext(beanFactory, null);
+    }
 
-	@Override
-	public String getName() {
-		return "spel";
-	}
+    @Override
+    public String[] getNames() {
+        return new String[]{"spel"};
+    }
 
-	@Override
-	@Nullable
-	public Object execute(String expressionText) {
-		Expression expression;
-		if (expressionText.contains("#{")) {
-			expression = spelParser.parseExpression(expressionText, new TemplateParserContext());
-		}
-		else {
-			expression = spelParser.parseExpression(expressionText);
-		}
-		return expression.getValue(spelContext, rootObject);
-	}
+    @Override
+    @Nullable
+    public Object execute(@NotNull String command, @Nullable String expressionText) {
+        if (expressionText == null || expressionText.isEmpty()) {
+            return new Exception("No expression");
+        }
+        Expression expression;
+        if (expressionText.contains("#{")) {
+            expression = spelParser.parseExpression(expressionText, new TemplateParserContext());
+        } else {
+            expression = spelParser.parseExpression(expressionText);
+        }
+        return expression.getValue(spelContext, rootObject);
+    }
 
 }

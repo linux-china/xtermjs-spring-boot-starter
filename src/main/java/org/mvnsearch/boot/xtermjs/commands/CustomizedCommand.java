@@ -1,5 +1,6 @@
 package org.mvnsearch.boot.xtermjs.commands;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -9,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface CustomizedCommand {
 
-	public String getName();
+	String[] getNames();
 
 	@Nullable
-	public Object execute(@Nullable String arguments);
+	Object execute(@NotNull String command, @Nullable String arguments) throws Exception;
 
 }

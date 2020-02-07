@@ -13,7 +13,7 @@ import org.springframework.shell.standard.ShellOption;
  *
  * @author linux_china
  */
-@ShellComponent
+@ShellComponent("redis: execute redis commands")
 public class RedisCommands {
 
 	@Autowired(required = false)

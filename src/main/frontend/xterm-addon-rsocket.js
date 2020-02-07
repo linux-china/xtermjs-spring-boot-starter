@@ -58,7 +58,7 @@ export class RSocketAddon {
             rsocket.requestChannel(this.commandFlux).subscribe({
                 onComplete: () => console.log('Terminal completed'),
                 onError: error => {
-                    this.errorDisplay(`Communication error:${error.message}`);
+                    this.errorDisplay("\u001b[31mCommunication error: " + error.message + "\u001b[39m");
                 },
                 onNext: payload => this.outputRemoteResult(payload),
                 onSubscribe: sub => sub.request(maxRSocketRequestN),
@@ -128,6 +128,8 @@ export class RSocketAddon {
                     this.commandLine = "";
                 } else if (code === 3) { //ctrl + c
                     //stop the task
+                } else if (code === 9) { //tab
+
                 }
             } else { // Visible
                 this.commandLine += data;
@@ -162,9 +164,15 @@ export class RSocketAddon {
                 this.terminal.prompt();
             } else if (command === "exit" || command === "quit") { //close window or tab
                 this.commandLine = "";
-                this.terminal.dispose();
-                this.rsocketClient.close();
-                window.close();
+                if (this.context !== '') {
+                    this.context = "";
+                    this.commandLine = "";
+                    this.terminal.prompt();
+                } else {
+                    this.terminal.dispose();
+                    this.rsocketClient.close();
+                    window.close();
+                }
             } else { //send command to backend
                 if (this.rsocket == null) {  //rsocket not available
                     let errorMsg = '\u001b[31mFailed to connect RSocket backend(' + this.url + '), please check your service! \u001b[39m';

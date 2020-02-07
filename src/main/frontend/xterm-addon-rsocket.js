@@ -102,7 +102,7 @@ export class RSocketAddon {
             } else if (code === 27) { // escape
                 switch (data.substr(1)) {
                     case "[A": // Up arrow
-                        this.terminal.write("\r\x1B[K$");
+                        this.terminal.write("\r" + this.promptText().substring(2));
                         let previous = this.history.getPrevious();
                         if (previous != null) {
                             this.terminal.write(previous);
@@ -110,7 +110,7 @@ export class RSocketAddon {
                         }
                         break;
                     case "[B": // Down arrow
-                        this.terminal.write("\r\x1B[K$");
+                        this.terminal.write("\r" + this.promptText().substring(2));
                         let next = this.history.getNext();
                         if (next != null) {
                             this.terminal.write(next);

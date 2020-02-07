@@ -50,7 +50,10 @@ public class XtermCommandHandler {
 		this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 		for (CustomizedCommand customizedCommand : customizedCommands) {
-			customizedCommandMap.put(customizedCommand.getName(), customizedCommand);
+			String[] names = customizedCommand.getNames();
+			for (String name : names) {
+				customizedCommandMap.put(name, customizedCommand);
+			}
 		}
 	}
 
@@ -68,7 +71,7 @@ public class XtermCommandHandler {
 		Object result;
 		try {
 			if (customizedCommandMap.containsKey(command)) {
-				result = customizedCommandMap.get(command).execute(arguments);
+				result = customizedCommandMap.get(command).execute(command, arguments);
 			}
 			else if (this.shell.listCommands().containsKey(command)) {
 				result = this.shell.evaluate(() -> commandLine);
@@ -108,7 +111,7 @@ public class XtermCommandHandler {
 				List<String> command = lineParser.parse(commandLine, 0).words();
 				String output = new ProcessExecutor().directory(new File((String) context.get("path"))).command(command)
 						.readOutput(true).execute().outputUTF8();
-				return Mono.just(output);
+				return Mono.just(output.trim());
 			}
 			catch (Exception e) {
 				return Mono.error(e);

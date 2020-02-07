@@ -11,12 +11,11 @@ import org.jline.utils.AttributedStyle;
 import org.mvnsearch.boot.xtermjs.commands.CustomizedCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.Shell;
+import org.zeroturnaround.exec.ProcessExecutor;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -106,17 +105,10 @@ public class XtermCommandHandler {
 	public Mono<Object> executeOsCommand(String commandLine) {
 		return Mono.deferWithContext(context -> {
 			try {
-				ProcessBuilder processBuilder = new ProcessBuilder(lineParser.parse(commandLine, 0).words());
-				processBuilder.redirectErrorStream(true);
-				processBuilder.directory(new File((String) context.get("path")));
-				Process p = processBuilder.start();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				List<String> lines = new ArrayList<>();
-				String line;
-				while ((line = reader.readLine()) != null) {
-					lines.add(line);
-				}
-				return Mono.just(lines);
+				List<String> command = lineParser.parse(commandLine, 0).words();
+				String output = new ProcessExecutor().directory(new File((String) context.get("path"))).command(command)
+						.readOutput(true).execute().outputUTF8();
+				return Mono.just(output);
 			}
 			catch (Exception e) {
 				return Mono.error(e);

@@ -62,6 +62,10 @@ spring.rsocket.server.transport=websocket
 
 # Application commands
 
+### System commands
+
+* cd, ls, tree etc  support by ZT Process Executor
+
 ### System
 
 * date
@@ -82,6 +86,11 @@ spring.rsocket.server.transport=websocket
 * health: display health information
 * spel: execute SpEL expression
 * actuator: display actuator information
+
+### Commands for Spring Bean
+
+* redis commands
+* mysql commands
 
 # How to development
 

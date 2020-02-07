@@ -16,7 +16,7 @@ public class SpelCommandTest extends DemoAppBaseTestCase {
 
 	@Test
 	public void testSpelCommand() {
-		Object result = spelCommand.execute("Hello #{ systemProperties['user.home'] }");
+		Object result = spelCommand.execute("spel", "Hello #{ systemProperties['user.home'] }");
 		System.out.println(result);
 	}
 

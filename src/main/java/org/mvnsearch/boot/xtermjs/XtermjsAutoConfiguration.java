@@ -5,11 +5,13 @@ import org.mvnsearch.boot.xtermjs.commands.sql.DatabaseCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.shell.ParameterResolver;
 import org.springframework.shell.standard.commands.Help;
 
@@ -59,13 +61,13 @@ public class XtermjsAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnBean(RedisTemplate.class)
+	@ConditionalOnClass(RedisTemplate.class)
 	public RedisCommands redisCommands() {
 		return new RedisCommands();
 	}
 
 	@Bean
-	@ConditionalOnBean(DataSource.class)
+	@ConditionalOnClass(JdbcTemplate.class)
 	public DatabaseCommands databaseCommands() {
 		return new DatabaseCommands();
 	}

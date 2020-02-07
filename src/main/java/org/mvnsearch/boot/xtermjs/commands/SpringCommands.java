@@ -16,7 +16,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -97,6 +96,23 @@ public class SpringCommands implements CommandsSupport {
 
 		}
 		return linesToString(lines);
+	}
+
+	@ShellMethod("Context list")
+	public List<String> contexts() {
+		List<String> contexts = new ArrayList<>();
+		Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(ShellComponent.class);
+		for (Object bean : beansWithAnnotation.values()) {
+			ShellComponent shellComponent = bean.getClass().getAnnotation(ShellComponent.class);
+			String value = shellComponent.value();
+			if (value.contains(": ")) {
+				contexts.add(value);
+			}
+		}
+		if(contexts.isEmpty()) {
+		    contexts.add("No context found");
+        }
+		return contexts;
 	}
 
 	@ShellMethod("Execute SpEL")

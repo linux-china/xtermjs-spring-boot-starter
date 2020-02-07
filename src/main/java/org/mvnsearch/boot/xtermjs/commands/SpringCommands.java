@@ -109,9 +109,9 @@ public class SpringCommands implements CommandsSupport {
 				contexts.add(value);
 			}
 		}
-		if(contexts.isEmpty()) {
-		    contexts.add("No context found");
-        }
+		if (contexts.isEmpty()) {
+			contexts.add("No context found");
+		}
 		return contexts;
 	}
 

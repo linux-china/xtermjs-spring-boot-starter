@@ -6,12 +6,15 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * JVM commands
@@ -47,6 +50,12 @@ public class JvmCommands implements CommandsSupport {
         return "";
     }
 
+    public String cpu() {
+        OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory
+                .getOperatingSystemMXBean();
+        return operatingSystemMXBean.getSystemLoadAverage() + "";
+    }
+
     @ShellMethod("Display Classpath info")
     public String classpath() {
         List<String> lines = new ArrayList<>();
@@ -62,6 +71,11 @@ public class JvmCommands implements CommandsSupport {
             Arrays.stream(urls).map(URL::toString).forEach(lines::add);
         }
         return linesToString(lines);
+    }
+
+    @ShellMethod("demo")
+    public String demo() {
+        return ansi().fgRed().a("good").reset().toString();
     }
 
 }

@@ -24,58 +24,59 @@ import static org.fusesource.jansi.Ansi.ansi;
 @ShellComponent
 public class JvmCommands implements CommandsSupport {
 
-    @ShellMethod("Java Options")
-    public String options() {
-        return linesToString(ManagementFactory.getRuntimeMXBean().getInputArguments());
-    }
+	@ShellMethod("Java Options")
+	public String options() {
+		return linesToString(ManagementFactory.getRuntimeMXBean().getInputArguments());
+	}
 
-    @ShellMethod("Show Threads")
-    public String threads() {
-        String threadPattern = "%4s %5s %10s %8s %16s  %s";
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        List<String> lines = new ArrayList<>();
-        lines.add(String.format(threadPattern, "ID", "Alive", "State", "Priority", "Group", "Name", "Daemon"));
-        threadSet.stream().map(thread -> {
-            return String.format(threadPattern, thread.getId(), thread.isAlive() ? 1 : 0, thread.getState().name(),
-                    thread.getPriority(), (thread.getThreadGroup() == null ? "" : thread.getThreadGroup().getName()),
-                    thread.getName(), thread.isDaemon());
-        }).forEach(lines::add);
-        lines.add("");
-        lines.add("Thread Count: " + (lines.size() - 1));
-        return linesToString(lines);
-    }
+	@ShellMethod("Show Threads")
+	public String threads() {
+		String threadPattern = "%4s %5s %10s %8s %16s  %s";
+		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+		List<String> lines = new ArrayList<>();
+		lines.add(String.format(threadPattern, "ID", "Alive", "State", "Priority", "Group", "Name", "Daemon"));
+		threadSet.stream().map(thread -> {
+			return String.format(threadPattern, thread.getId(), thread.isAlive() ? 1 : 0, thread.getState().name(),
+					thread.getPriority(), (thread.getThreadGroup() == null ? "" : thread.getThreadGroup().getName()),
+					thread.getName(), thread.isDaemon());
+		}).forEach(lines::add);
+		lines.add("");
+		lines.add("Thread Count: " + (lines.size() - 1));
+		return linesToString(lines);
+	}
 
-    @ShellMethod("Show Thread")
-    public String thread(@ShellOption(help = "Thread ID", defaultValue = "") Integer threadId) {
-        return "";
-    }
+	@ShellMethod("Show Thread")
+	public String thread(@ShellOption(help = "Thread ID", defaultValue = "") Integer threadId) {
+		return "";
+	}
 
-    public String cpu() {
-        OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory
-                .getOperatingSystemMXBean();
-        return operatingSystemMXBean.getSystemLoadAverage() + "";
-    }
+	public String cpu() {
+		OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory
+				.getOperatingSystemMXBean();
+		return operatingSystemMXBean.getSystemLoadAverage() + "";
+	}
 
-    @ShellMethod("Display Classpath info")
-    public String classpath() {
-        List<String> lines = new ArrayList<>();
-        String classPath = System.getProperty("CLASSPATH");
-        if (classPath == null || classPath.isEmpty()) {
-            classPath = ManagementFactory.getRuntimeMXBean().getClassPath();
-        }
-        if (classPath != null) {
-            lines.addAll(Arrays.asList(classPath.split(File.pathSeparator)));
-        } else {
-            ClassLoader cl = ClassLoader.getSystemClassLoader();
-            URL[] urls = ((URLClassLoader) cl).getURLs();
-            Arrays.stream(urls).map(URL::toString).forEach(lines::add);
-        }
-        return linesToString(lines);
-    }
+	@ShellMethod("Display Classpath info")
+	public String classpath() {
+		List<String> lines = new ArrayList<>();
+		String classPath = System.getProperty("CLASSPATH");
+		if (classPath == null || classPath.isEmpty()) {
+			classPath = ManagementFactory.getRuntimeMXBean().getClassPath();
+		}
+		if (classPath != null) {
+			lines.addAll(Arrays.asList(classPath.split(File.pathSeparator)));
+		}
+		else {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			URL[] urls = ((URLClassLoader) cl).getURLs();
+			Arrays.stream(urls).map(URL::toString).forEach(lines::add);
+		}
+		return linesToString(lines);
+	}
 
-    @ShellMethod("demo")
-    public String demo() {
-        return ansi().fgRed().a("good").reset().toString();
-    }
+	@ShellMethod("demo")
+	public String demo() {
+		return ansi().fgRed().a("good").reset().toString();
+	}
 
 }

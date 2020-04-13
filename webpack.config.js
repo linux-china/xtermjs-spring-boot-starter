@@ -9,6 +9,7 @@ module.exports = {
         path: path.resolve(__dirname, 'target/classes/META-INF/resources'),
         filename: 'xterm.bundle.js'
     },
+    performance: {hints: false},
     plugins: [
         new CleanWebpackPlugin()
     ],

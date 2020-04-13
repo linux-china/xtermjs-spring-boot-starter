@@ -33,7 +33,7 @@ class XtermConsole extends HTMLElement {
         term.open(container);
         fitAddon.fit();
         //welcome banner
-        let hint = welcome || 'Welcome xterm with RSocket.';
+        let hint = welcome || 'Welcome xterm with RSocket!';
         term.writeln(hint);
         term.prompt();
         term.focus();

@@ -29,7 +29,7 @@ class XtermConsole extends HTMLElement {
         term.loadAddon(new WebLinksAddon());
         let fitAddon = new FitAddon();
         term.loadAddon(fitAddon);
-        term.loadAddon(new RSocketAddon(rsocketUrl));
+        term.loadAddon(new RSocketAddon(rsocketUrl, {}));
         term.open(container);
         fitAddon.fit();
         //welcome banner

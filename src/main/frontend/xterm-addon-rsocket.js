@@ -41,27 +41,33 @@ export class RSocketAddon {
         });
     }
 
+    /**
+     * active addon
+     * @param {Terminal} terminal
+     */
     activate(terminal) {
         this.terminal = terminal;
+        this.indicator = "\u001b[1;32m$\u001b[39m";
         this.terminal.prompt = () => {
             this.terminal.write(this.promptText());
         };
         //attach key listener to parse command line
         this.attachKeyListener();
         //attach executeLine for terminal
-        terminal.executeLine = () => {
+        this.terminal.executeLine = () => {
             this.triggerCommand();
         };
         // open rsocket connection
         this.rsocketClient.connect().then(rsocket => {
             this.rsocket = rsocket;
+            // noinspection JSUnusedGlobalSymbols
             rsocket.requestChannel(this.commandFlux).subscribe({
                 onComplete: () => console.log('Terminal completed'),
                 onError: error => {
-                    this.errorDisplay("\u001b[31mCommunication error: " + error.message + "\u001b[39m");
+                    this.outputError("\u001b[31mCommunication error: " + error.message + "\u001b[39m");
                 },
                 onNext: payload => this.outputRemoteResult(payload),
-                onSubscribe: sub => sub.request(maxRSocketRequestN),
+                onSubscribe: sub => sub.request(maxRSocketRequestN)
             });
             //first payload with routing key
             this.commandFlux.onNext(
@@ -70,13 +76,17 @@ export class RSocketAddon {
                         metadata: encodeAndAddWellKnownMetadata(
                                 Buffer.alloc(0),
                                 MESSAGE_RSOCKET_ROUTING,
-                                RSocketAddon.routingKey('xterm.shell'),
+                                RSocketAddon.generateRoutingData('xterm.shell'),
                         )
                     });
         });
     }
 
-    errorDisplay(errorMsg) {
+    /**
+     * output error message
+     * @param {string} errorMsg
+     */
+    outputError(errorMsg) {
         this.commandLine = "";
         this.terminal.writeln("");
         this.terminal.write(errorMsg);
@@ -102,7 +112,7 @@ export class RSocketAddon {
             } else if (code === 27) { // escape
                 switch (data.substr(1)) {
                     case "[A": // Up arrow
-                        this.terminal.write("\r" + this.promptText().substring(2));
+                        this.clearLine();
                         let previous = this.history.getPrevious();
                         if (previous != null) {
                             this.terminal.write(previous);
@@ -110,7 +120,7 @@ export class RSocketAddon {
                         }
                         break;
                     case "[B": // Down arrow
-                        this.terminal.write("\r" + this.promptText().substring(2));
+                        this.clearLine();
                         let next = this.history.getNext();
                         if (next != null) {
                             this.terminal.write(next);
@@ -120,12 +130,9 @@ export class RSocketAddon {
                 }
             } else if (code < 32) { // Control
                 if (code === 21) { // Control+u to clear line
-                    this.terminal.write("\r\x1B[K$");
-                    this.commandLine = "";
+                    this.clearLine();
                 } else if (code === 12) { //ctrl+l to clear screen
                     this.clearScreen();
-                    this.terminal.write("\r\x1B[K$");
-                    this.commandLine = "";
                 } else if (code === 3) { //ctrl + c
                     //stop the task
                 } else if (code === 9) { //tab
@@ -147,8 +154,6 @@ export class RSocketAddon {
             this.history.push(this.commandLine.trim());
             if (command === "clear") { //clear screen
                 this.clearScreen();
-                this.commandLine = "";
-                this.terminal.write(this.promptText().substring(2))
             } else if (command === "pwd") { //use context
                 this.commandLine = "";
                 this.terminal.writeln("");
@@ -176,7 +181,7 @@ export class RSocketAddon {
             } else { //send command to backend
                 if (this.rsocket == null) {  //rsocket not available
                     let errorMsg = '\u001b[31mFailed to connect RSocket backend(' + this.url + '), please check your service! \u001b[39m';
-                    this.errorDisplay(errorMsg);
+                    this.outputError(errorMsg);
                 } else {
                     this.commandFlux.onNext({data: new Buffer(contextPrefix + this.commandLine)});
                 }
@@ -186,19 +191,20 @@ export class RSocketAddon {
 
     promptText() {
         if (this.context) {
-            return '\r\n[' + this.context + ']$';
+            return '\r\n[' + this.context + ']' + this.indicator;
         } else {
-            return '\r\n$';
+            return '\r\n' + this.indicator;
         }
     }
 
     clearScreen() {
         this.terminal.clear();
         this.terminal.reset();
+        this.clearLine();
     }
 
     clearLine() {
-        this.terminal.write('\b \b'.repeat(byteLength(this.promptText())));
+        this.terminal.write("\r\x1B[K" + this.promptText().substring(2));
         this.commandLine = "";
     }
 
@@ -223,10 +229,15 @@ export class RSocketAddon {
         this.rsocketClient.close();
     }
 
-    static routingKey(key) {
-        let buffer = Buffer.alloc(1 + key.length);
-        buffer.writeInt8(key.length, 0);
-        buffer.write(key, 1);
+    /**
+     * generate routing data
+     * @param {string} routing
+     * @return {Buffer}
+     */
+    static generateRoutingData(routing) {
+        let buffer = Buffer.alloc(1 + routing.length);
+        buffer.writeInt8(routing.length, 0);
+        buffer.write(routing, 1);
         return buffer
     }
 }
@@ -240,6 +251,7 @@ class HistoryController {
 
     /**
      * Push an entry and maintain ring buffer size
+     * @param {string} entry
      */
     push(entry) {
         // Skip duplicate entries
@@ -262,6 +274,7 @@ class HistoryController {
 
     /**
      * Returns the previous entry
+     * @return {string|null}
      */
     getPrevious() {
         const idx = Math.max(0, this.cursor - 1);
@@ -271,6 +284,7 @@ class HistoryController {
 
     /**
      * Returns the next entry
+     * @return {string|null}
      */
     getNext() {
         const idx = Math.min(this.entries.length, this.cursor + 1);
@@ -279,6 +293,11 @@ class HistoryController {
     }
 }
 
+/**
+ * byte length for text
+ * @param {string} str
+ * @return {number}
+ */
 function byteLength(str) {
     // returns the byte length of an utf8 string
     let length = str.length;

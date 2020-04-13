@@ -47,7 +47,7 @@ export class RSocketAddon {
      */
     activate(terminal) {
         this.terminal = terminal;
-        this.indicator = "\u001b[1;32m$\u001b[39m";
+        this.indicator = ansiText("green", "$");
         this.terminal.prompt = () => {
             this.terminal.write(this.promptText());
         };
@@ -64,7 +64,7 @@ export class RSocketAddon {
             rsocket.requestChannel(this.commandFlux).subscribe({
                 onComplete: () => console.log('Terminal completed'),
                 onError: error => {
-                    this.outputError("\u001b[31mCommunication error: " + error.message + "\u001b[39m");
+                    this.outputError(ansiText("red", "Communication error: " + error.message));
                 },
                 onNext: payload => this.outputRemoteResult(payload),
                 onSubscribe: sub => sub.request(maxRSocketRequestN)
@@ -308,4 +308,27 @@ function byteLength(str) {
         if (code >= 0xDC00 && code <= 0xDFFF) i--; //trail surrogate
     }
     return length;
+}
+
+function ansiText(color, text) {
+    switch (color) {
+        case "black":
+            return "\u001b[0;90m" + text + "\u001b[39m";
+        case "red":
+            return "\u001b[0;91m" + text + "\u001b[39m";
+        case "green":
+            return "\u001b[0;92m" + text + "\u001b[39m";
+        case "yellow":
+            return "\u001b[0;93m" + text + "\u001b[39m";
+        case "blue":
+            return "\u001b[0;94m" + text + "\u001b[39m";
+        case "purple":
+            return "\u001b[0;95m" + text + "\u001b[39m";
+        case "cyan":
+            return "\u001b[0;96m" + text + "\u001b[39m";
+        case "white":
+            return "\u001b[0;97m" + text + "\u001b[39m";
+        default:
+            return text;
+    }
 }

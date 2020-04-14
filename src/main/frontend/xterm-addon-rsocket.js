@@ -209,6 +209,12 @@ export class RSocketAddon {
         this.commandLine = "";
     }
 
+    nextLine() {
+        this.commandLine = '';
+        this.terminal.prompt();
+    }
+
+
     //output remote result
     outputRemoteResult(payload) {
         if (payload.data != null && payload.data.length > 0) {
@@ -217,13 +223,10 @@ export class RSocketAddon {
                 this.path = resultText.replace("$path:", "");
             } else {
                 this.terminal.writeln("");
-                this.terminal.write("\u001b[39m"+resultText);
-            }
-            if (this.commandLine !== "") {
-                this.commandLine = '';
-                this.terminal.prompt();
+                this.terminal.write("\u001b[39m" + resultText);
             }
         }
+        this.nextLine()
     }
 
     dispose() {

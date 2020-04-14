@@ -190,10 +190,11 @@ export class RSocketAddon {
     }
 
     promptText() {
+        let commandLineColor = "\u001b[0;92m"
         if (this.context) {
-            return '\r\n[' + this.context + ']' + this.indicator;
+            return '\r\n[' + this.context + ']' + this.indicator + commandLineColor;
         } else {
-            return '\r\n' + this.indicator;
+            return '\r\n' + this.indicator + commandLineColor;
         }
     }
 
@@ -216,7 +217,7 @@ export class RSocketAddon {
                 this.path = resultText.replace("$path:", "");
             } else {
                 this.terminal.writeln("");
-                this.terminal.write(resultText);
+                this.terminal.write("\u001b[39m"+resultText);
             }
             if (this.commandLine !== "") {
                 this.commandLine = '';
@@ -313,21 +314,21 @@ function byteLength(str) {
 function ansiText(color, text) {
     switch (color) {
         case "black":
-            return "\u001b[0;90m" + text + "\u001b[39m";
+            return "\u001b[1;90m" + text + "\u001b[39m";
         case "red":
-            return "\u001b[0;91m" + text + "\u001b[39m";
+            return "\u001b[1;91m" + text + "\u001b[39m";
         case "green":
-            return "\u001b[0;92m" + text + "\u001b[39m";
+            return "\u001b[1;92m" + text + "\u001b[39m";
         case "yellow":
-            return "\u001b[0;93m" + text + "\u001b[39m";
+            return "\u001b[1;93m" + text + "\u001b[39m";
         case "blue":
-            return "\u001b[0;94m" + text + "\u001b[39m";
+            return "\u001b[1;94m" + text + "\u001b[39m";
         case "purple":
-            return "\u001b[0;95m" + text + "\u001b[39m";
+            return "\u001b[1;95m" + text + "\u001b[39m";
         case "cyan":
-            return "\u001b[0;96m" + text + "\u001b[39m";
+            return "\u001b[1;96m" + text + "\u001b[39m";
         case "white":
-            return "\u001b[0;97m" + text + "\u001b[39m";
+            return "\u001b[1;97m" + text + "\u001b[39m";
         default:
             return text;
     }

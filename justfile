@@ -7,3 +7,6 @@ deploy:
 install:
    rm -rf  ~/.m2/repository/org/mvnsearch/xterm-spring-boot-starter/
    mvn -DskipTests clean source:jar package install
+
+format:
+   mvn spring-javaformat:apply

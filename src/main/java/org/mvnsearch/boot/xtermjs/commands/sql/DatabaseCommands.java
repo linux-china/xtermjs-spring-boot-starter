@@ -32,16 +32,14 @@ public class DatabaseCommands implements CustomizedCommand {
 
 	@Override
 	public @Nullable Object execute(@NotNull String command, @Nullable String arguments) throws Exception {
-		if (command.equals("db-select")) {
+		switch (command) {
+		case "db-select":
 			return select(trimSemicolon("select " + arguments));
-		}
-		else if (command.equals("db-show")) {
+		case "db-show":
 			return select(trimSemicolon("show " + arguments));
-		}
-		else if (command.equals("db-desc")) {
+		case "db-desc":
 			return select(trimSemicolon("desc " + arguments));
-		}
-		else {
+		default:
 			return execute(trimSemicolon(command.replace("db-", "") + " " + arguments));
 		}
 	}

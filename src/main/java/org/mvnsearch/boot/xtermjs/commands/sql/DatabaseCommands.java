@@ -27,13 +27,19 @@ public class DatabaseCommands implements CustomizedCommand {
 
 	@Override
 	public String[] getNames() {
-		return new String[] { "db-select", "select", "db-update", "db-insert", "db-delete", "db-desc" };
+		return new String[] { "db-select", "db-show", "db-update", "db-insert", "db-delete", "db-desc" };
 	}
 
 	@Override
 	public @Nullable Object execute(@NotNull String command, @Nullable String arguments) throws Exception {
 		if (command.equals("db-select") || command.equals("select")) {
 			return select(trimSemicolon("select " + arguments));
+		}
+		else if (command.equals("db-show")) {
+			return select(trimSemicolon("show " + arguments));
+		}
+		else if (command.equals("db-desc")) {
+			return select(trimSemicolon("desc " + arguments));
 		}
 		else {
 			return execute(trimSemicolon(command.replace("db-", "") + " " + arguments));

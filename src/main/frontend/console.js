@@ -18,7 +18,7 @@ class XtermConsole extends HTMLElement {
             rsocketUrl = schema + document.location.host + rsocketUrl;
         }
         let container = document.createElement('div');
-        container.style.cssText = 'width: 100%; height: 100%;';
+        container.style.cssText = 'width: 98%; height: 98%;';
         this.append(container);
         //initialize xterm
         let term = new Terminal();

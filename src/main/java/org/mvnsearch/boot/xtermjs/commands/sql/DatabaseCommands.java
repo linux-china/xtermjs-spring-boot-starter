@@ -32,7 +32,7 @@ public class DatabaseCommands implements CustomizedCommand {
 
 	@Override
 	public @Nullable Object execute(@NotNull String command, @Nullable String arguments) throws Exception {
-		if (command.equals("db-select") || command.equals("select")) {
+		if (command.equals("db-select")) {
 			return select(trimSemicolon("select " + arguments));
 		}
 		else if (command.equals("db-show")) {

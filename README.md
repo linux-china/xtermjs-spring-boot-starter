@@ -70,7 +70,7 @@ spring.rsocket.server.transport=websocket
 * profiles: display profile
 * metrics: display metrics
 * health: display health information
-* spel: execute SpEL expression
+* spel: execute SpEL expression 'spel userService.findById(1)'
 * actuator: display actuator information
 
 ### Commands for Spring Bean

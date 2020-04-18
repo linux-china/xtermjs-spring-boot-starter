@@ -17,6 +17,7 @@ const metadataMimeType = MESSAGE_RSOCKET_COMPOSITE_METADATA.string;
 export class RSocketAddon {
 
     constructor(url, options) {
+        this.commandCount = 0;
         this.url = url;
         // current command line
         this.commandLine = '';
@@ -148,6 +149,7 @@ export class RSocketAddon {
     // trigger command execute
     triggerCommand() {
         if (this.commandLine.trim().length > 0) {
+            this.commandCount = this.commandCount +1;
             let parts = this.commandLine.split(/\s/, 2);
             let contextPrefix = this.context === "" ? "" : this.context + "-";
             let command = parts[0];
@@ -226,7 +228,9 @@ export class RSocketAddon {
                 this.terminal.write("\u001b[39m" + resultText);
             }
         }
-        this.nextLine()
+        if(this.commandCount > 0) {
+            this.nextLine()
+        }
     }
 
     dispose() {

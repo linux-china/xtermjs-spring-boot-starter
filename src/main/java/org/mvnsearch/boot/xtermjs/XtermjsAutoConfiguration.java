@@ -4,7 +4,6 @@ import org.mvnsearch.boot.xtermjs.commands.*;
 import org.mvnsearch.boot.xtermjs.commands.sql.DatabaseCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.shell.ParameterResolver;
 import org.springframework.shell.standard.commands.Help;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -58,6 +56,11 @@ public class XtermjsAutoConfiguration {
 	@Bean
 	public SpelCommand spelCommand() {
 		return new SpelCommand();
+	}
+
+	@Bean
+	public ExportCommand exportCommand() {
+		return new ExportCommand();
 	}
 
 	@Bean

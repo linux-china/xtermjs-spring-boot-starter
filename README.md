@@ -89,3 +89,5 @@ spring.rsocket.server.transport=websocket
 * Spring Shell Docs: https://docs.spring.io/spring-shell/docs/current/reference/htmlsingle/
 * xterm.js + local echo https://www.linkedin.com/pulse/xtermjs-local-echo-ioannis-charalampidis
 * How to change the output color of echo in Linux: https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
+* NO_COLOR: https://no-color.org/
+

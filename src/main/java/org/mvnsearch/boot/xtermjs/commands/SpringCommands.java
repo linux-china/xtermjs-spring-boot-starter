@@ -4,14 +4,15 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import org.apache.commons.io.input.ReversedLinesFileReader;
-import org.jline.utils.AttributedString;
-import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.actuate.endpoint.web.annotation.WebEndpointDiscoverer;
-import org.springframework.boot.actuate.health.*;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthComponent;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.health.ReactiveHealthIndicator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
@@ -255,37 +256,14 @@ public class SpringCommands implements CommandsSupport {
 	}
 
 	@ShellMethod("Display health")
-	public String health(@ShellOption(help = "health component name", defaultValue = "") String componentName) {
-		List<String> lines = new ArrayList<>();
-		HealthComponent healthComponent = healthEndpoint.health();
-		Map<String, HealthComponent> healthComponents;
-		if (healthComponent instanceof SystemHealth) {
-			healthComponents = ((SystemHealth) healthComponent).getComponents();
+	public Object health(@ShellOption(help = "health component name", defaultValue = "") String componentName) {
+		try {
+			ReactiveHealthIndicator healthIndicator = applicationContext.getBean(ReactiveHealthIndicator.class);
+			return healthIndicator.health().map(health -> health.getStatus().getCode());
 		}
-		else if (healthComponent instanceof CompositeHealth) {
-			healthComponents = ((CompositeHealth) healthComponent).getComponents();
+		catch (Exception e) {
+			return new Exception("Failed to get health:" + e.getMessage());
 		}
-		else {
-			healthComponents = new HashMap<>();
-			healthComponents.put("Default", healthComponent);
-		}
-		for (Map.Entry<String, HealthComponent> entry : healthComponents.entrySet()) {
-			Status status = entry.getValue().getStatus();
-			AttributedStyle foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN);
-			if (!status.getCode().equalsIgnoreCase(Status.UP.getCode())) {
-				foreground = AttributedStyle.DEFAULT.foreground(AttributedStyle.RED);
-			}
-			String line;
-			if (status.getDescription() != null && !status.getDescription().isEmpty()) {
-				line = healthName(entry.getKey(), entry.getValue()) + ": " + status.getCode() + " -- "
-						+ status.getDescription();
-			}
-			else {
-				line = healthName(entry.getKey(), entry.getValue()) + ": " + status.getCode();
-			}
-			lines.add(new AttributedString(line, foreground).toAnsi());
-		}
-		return linesToString(lines);
 	}
 
 	@ShellMethod("Display profiles")

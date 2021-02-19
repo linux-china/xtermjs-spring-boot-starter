@@ -50,10 +50,23 @@ public class JvmCommands implements CommandsSupport {
 		return "";
 	}
 
+	@ShellMethod("Show Memory")
+	public String mem() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("HeapSize:").append(Runtime.getRuntime().totalMemory());
+		builder.append("HeapMaxSize:").append(Runtime.getRuntime().maxMemory());
+		builder.append("HeapFreeSize:").append(Runtime.getRuntime().freeMemory());
+		return builder.toString();
+	}
+
+	@ShellMethod("Show CPU")
 	public String cpu() {
-		OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory
-				.getOperatingSystemMXBean();
-		return operatingSystemMXBean.getSystemLoadAverage() + "";
+		StringBuilder builder = new StringBuilder();
+		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+		builder.append("arch:").append(operatingSystemMXBean.getArch());
+		builder.append("processors:").append(operatingSystemMXBean.getAvailableProcessors());
+		builder.append("load:").append(operatingSystemMXBean.getSystemLoadAverage());
+		return builder.toString();
 	}
 
 	@ShellMethod("Display Classpath info")

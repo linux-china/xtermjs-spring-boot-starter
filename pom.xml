@@ -13,10 +13,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.9.RELEASE</spring-boot.version>
         <spring-shell.version>2.0.1.RELEASE</spring-shell.version>
-        <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
-        <junit5.version>5.6.2</junit5.version>
+        <frontend-maven-plugin.version>1.11.2</frontend-maven-plugin.version>
+        <junit5.version>5.7.1</junit5.version>
     </properties>
 
     <licenses>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.16.0</version>
+            <version>3.17.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -233,7 +233,7 @@
             <plugin>
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
-                <version>0.0.25</version>
+                <version>0.0.27</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>

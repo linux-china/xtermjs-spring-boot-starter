@@ -4,6 +4,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 module.exports = {
     mode: "production",
+    node: false,
     entry: './src/main/frontend/console.js',
     output: {
         path: path.resolve(__dirname, 'target/classes/META-INF/resources'),

@@ -53,8 +53,8 @@ public class JvmCommands implements CommandsSupport {
 	@ShellMethod("Show Memory")
 	public String mem() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("HeapSize:").append(Runtime.getRuntime().totalMemory());
-		builder.append("HeapMaxSize:").append(Runtime.getRuntime().maxMemory());
+		builder.append("HeapSize:").append(Runtime.getRuntime().totalMemory()).append(",");
+		builder.append("HeapMaxSize:").append(Runtime.getRuntime().maxMemory()).append(",");
 		builder.append("HeapFreeSize:").append(Runtime.getRuntime().freeMemory());
 		return builder.toString();
 	}
@@ -63,8 +63,8 @@ public class JvmCommands implements CommandsSupport {
 	public String cpu() {
 		StringBuilder builder = new StringBuilder();
 		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-		builder.append("arch:").append(operatingSystemMXBean.getArch());
-		builder.append("processors:").append(operatingSystemMXBean.getAvailableProcessors());
+		builder.append("arch:").append(operatingSystemMXBean.getArch()).append(",");
+		builder.append("processors:").append(operatingSystemMXBean.getAvailableProcessors()).append(",");
 		builder.append("load:").append(operatingSystemMXBean.getSystemLoadAverage());
 		return builder.toString();
 	}

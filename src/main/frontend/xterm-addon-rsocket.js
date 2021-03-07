@@ -1,7 +1,6 @@
 import {BufferEncoders, encodeCompositeMetadata, encodeRoute, MESSAGE_RSOCKET_COMPOSITE_METADATA, MESSAGE_RSOCKET_ROUTING, RSocketClient,} from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {FlowableProcessor} from "rsocket-flowable";
-import {LiteBuffer as Buffer} from "rsocket-core/build/LiteBuffer"
 
 const maxRSocketRequestN = 2147483647;
 const keepAlive = 60000;

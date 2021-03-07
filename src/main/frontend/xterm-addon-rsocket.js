@@ -1,12 +1,7 @@
-import {
-    BufferEncoders,
-    encodeAndAddWellKnownMetadata,
-    MESSAGE_RSOCKET_COMPOSITE_METADATA,
-    MESSAGE_RSOCKET_ROUTING,
-    RSocketClient,
-} from 'rsocket-core';
+import {BufferEncoders, encodeCompositeMetadata, encodeRoute, MESSAGE_RSOCKET_COMPOSITE_METADATA, MESSAGE_RSOCKET_ROUTING, RSocketClient,} from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {FlowableProcessor} from "rsocket-flowable";
+import {LiteBuffer as Buffer} from "rsocket-core/build/LiteBuffer"
 
 const maxRSocketRequestN = 2147483647;
 const keepAlive = 60000;
@@ -73,12 +68,10 @@ export class RSocketAddon {
             //first payload with routing key
             this.commandFlux.onNext(
                     {
-                        data: new Buffer('cd'),
-                        metadata: encodeAndAddWellKnownMetadata(
-                                Buffer.alloc(0),
-                                MESSAGE_RSOCKET_ROUTING,
-                                RSocketAddon.generateRoutingData('xterm.shell'),
-                        )
+                        data: Buffer.from('cd'),
+                        metadata: encodeCompositeMetadata([
+                            [MESSAGE_RSOCKET_ROUTING, encodeRoute("xterm.shell")]
+                        ])
                     });
         });
     }
@@ -149,7 +142,7 @@ export class RSocketAddon {
     // trigger command execute
     triggerCommand() {
         if (this.commandLine.trim().length > 0) {
-            this.commandCount = this.commandCount +1;
+            this.commandCount = this.commandCount + 1;
             let parts = this.commandLine.split(/\s/, 2);
             let contextPrefix = this.context === "" ? "" : this.context + "-";
             let command = parts[0];
@@ -185,7 +178,7 @@ export class RSocketAddon {
                     let errorMsg = '\u001b[31mFailed to connect RSocket backend(' + this.url + '), please check your service! \u001b[39m';
                     this.outputError(errorMsg);
                 } else {
-                    this.commandFlux.onNext({data: new Buffer(contextPrefix + this.commandLine)});
+                    this.commandFlux.onNext({data: Buffer.from(contextPrefix + this.commandLine)});
                 }
             }
         }
@@ -228,7 +221,7 @@ export class RSocketAddon {
                 this.terminal.write("\u001b[39m" + resultText);
             }
         }
-        if(this.commandCount > 0) {
+        if (this.commandCount > 0) {
             this.nextLine()
         }
     }

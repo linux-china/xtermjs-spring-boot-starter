@@ -23,7 +23,7 @@ Supply a web terminal to manage Spring Boot app. Why?
     <dependency>
         <groupId>org.mvnsearch</groupId>
         <artifactId>xtermjs-spring-boot-starter</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.1</version>
     </dependency> 
 </dependencies> 
 ```

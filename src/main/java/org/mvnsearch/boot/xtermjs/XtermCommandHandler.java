@@ -131,8 +131,11 @@ public class XtermCommandHandler {
 
 	public String formatObject(@NotNull Object object) {
 		if (object instanceof Exception) {
-			return new AttributedString(((Exception) object).getMessage(),
-					AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAnsi();
+			String message = ((Exception) object).getMessage();
+			if (message == null) {
+				message = "Null message from exception";
+			}
+			return new AttributedString(message, AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAnsi();
 		}
 		else if (object instanceof AttributedString) {
 			return ((AttributedString) object).toAnsi();

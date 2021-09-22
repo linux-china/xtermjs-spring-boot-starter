@@ -76,7 +76,21 @@ spring.rsocket.server.transport=websocket
 ### Commands for Spring Bean
 
 * redis commands
+
+```
+use redis
+set nick linux_china
+get nick
+exit
+```
+
 * mysql commands
+
+```
+use db
+select * from account;
+exit db
+```
 
 # How to development
 

@@ -3,7 +3,9 @@ install:
    mvn -DskipTests clean source:jar package install
 
 deploy:
-   mvn -P release -DskipTests clean package deploy
+   mvn clean
+   npm run build
+   mvn -P release -DskipTests package deploy
 
 format:
    mvn spring-javaformat:apply

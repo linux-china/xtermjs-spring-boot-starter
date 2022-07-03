@@ -15,8 +15,8 @@
         <java.version>1.8</java.version>
         <spring-boot.version>2.4.12</spring-boot.version>
         <spring-shell.version>2.0.1.RELEASE</spring-shell.version>
-        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
-        <junit5.version>5.8.1</junit5.version>
+        <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
+        <junit5.version>5.8.2</junit5.version>
     </properties>
 
     <licenses>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.20.0</version>
+            <version>3.21.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -153,7 +153,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.21.0</version>
+            <version>3.23.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -166,6 +166,13 @@
                 <version>${junit5.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>io.rsocket</groupId>
+                <artifactId>rsocket-bom</artifactId>
+                <version>1.1.2</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <!-- Import dependency management from Spring Boot,not include plugin
@@ -184,7 +191,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -196,7 +203,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontend-maven-plugin.version}</version>
                 <configuration>
-                    <nodeVersion>v14.17.3</nodeVersion>
+                    <nodeVersion>v14.19.3</nodeVersion>
                 </configuration>
                 <executions>
                     <execution>
@@ -250,11 +257,11 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.8</version>
+                        <version>1.6.12</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>

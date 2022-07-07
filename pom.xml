@@ -203,7 +203,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontend-maven-plugin.version}</version>
                 <configuration>
-                    <nodeVersion>v14.19.3</nodeVersion>
+                    <nodeVersion>v14.20.0</nodeVersion>
                 </configuration>
                 <executions>
                     <execution>

@@ -23,7 +23,7 @@ Supply a web terminal to manage Spring Boot app. Why?
     <dependency>
         <groupId>org.mvnsearch</groupId>
         <artifactId>xtermjs-spring-boot-starter</artifactId>
-        <version>1.2.3</version>
+        <version>1.3.0</version>
     </dependency> 
 </dependencies> 
 ```
@@ -34,6 +34,8 @@ Supply a web terminal to manage Spring Boot app. Why?
 # rsocket websocket
 spring.rsocket.server.mapping-path=/rsocket
 spring.rsocket.server.transport=websocket
+# disable spring shell interactive mode 
+spring.shell.interactive.enabled=false
 ```
 
 * Start Spring Boot app and visit http://localhost:8080/xterm
@@ -50,7 +52,7 @@ spring.rsocket.server.transport=websocket
 
 ### System commands
 
-* cd, ls, tree etc  support by ZT Process Executor
+* cd, ls, tree etc. support by ZT Process Executor
 
 ### System
 

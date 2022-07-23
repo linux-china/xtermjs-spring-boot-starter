@@ -1,6 +1,7 @@
 package org.mvnsearch.boot.xtermjs.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -31,7 +32,7 @@ import java.util.List;
 public class CurlCommand {
 
 	@Autowired
-	private Shell shell;
+	private ApplicationContext applicationContext;
 
 	public static WebClient webClient = WebClient.builder().build();
 
@@ -74,7 +75,8 @@ public class CurlCommand {
 			return Mono.just("7.0.0 - WebClient");
 		}
 		if (showHelp) { // show help
-			return Mono.just(this.shell.evaluate(() -> "help curl").toString());
+			Shell shell = applicationContext.getBean(Shell.class);
+			return Mono.just(shell.evaluate(() -> "help curl").toString());
 		}
 		WebClient.RequestBodySpec requestBodySpec;
 		// follow redirects

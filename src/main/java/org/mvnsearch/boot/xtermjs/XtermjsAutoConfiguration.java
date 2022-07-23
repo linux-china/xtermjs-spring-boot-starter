@@ -7,14 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.shell.ParameterResolver;
-import org.springframework.shell.standard.commands.Help;
-
-import java.util.List;
 
 /**
  * Xterm.js auto configuration
@@ -22,16 +17,10 @@ import java.util.List;
  * @author linux_china
  */
 @Configuration
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order()
 public class XtermjsAutoConfiguration {
 
-	private Logger log = LoggerFactory.getLogger(XtermjsAutoConfiguration.class);
-
-	@Bean
-	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-	public Help help(List<ParameterResolver> parameterResolvers) {
-		return new Help(parameterResolvers);
-	}
+	private final Logger log = LoggerFactory.getLogger(XtermjsAutoConfiguration.class);
 
 	@Bean
 	public SystemCommands systemCommands() {

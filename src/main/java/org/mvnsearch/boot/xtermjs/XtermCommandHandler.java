@@ -10,7 +10,9 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.mvnsearch.boot.xtermjs.commands.CustomizedCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.shell.Shell;
+import org.springframework.shell.command.CommandCatalog;
 import org.zeroturnaround.exec.ProcessExecutor;
 import reactor.core.publisher.Mono;
 
@@ -27,7 +29,7 @@ import java.util.*;
 public class XtermCommandHandler {
 
 	@Autowired
-	private Shell shell;
+	private ApplicationContext applicationContext;
 
 	@Autowired
 	public List<CustomizedCommand> customizedCommands;
@@ -70,11 +72,13 @@ public class XtermCommandHandler {
 		}
 		Object result;
 		try {
+			CommandCatalog commandCatalog = applicationContext.getBean(CommandCatalog.class);
 			if (customizedCommandMap.containsKey(command)) {
 				result = customizedCommandMap.get(command).execute(command, arguments);
 			}
-			else if (this.shell.listCommands().containsKey(command)) {
-				result = this.shell.evaluate(() -> commandLine);
+			else if (commandCatalog.getRegistrations().containsKey(command)) {
+				Shell shell = applicationContext.getBean(Shell.class);
+				result = shell.evaluate(() -> commandLine);
 			}
 			else {
 				result = executeOsCommand(commandLine);

@@ -21,7 +21,9 @@ class XtermConsole extends HTMLElement {
         container.style.cssText = 'width: 98%; height: 98%;';
         this.append(container);
         //initialize xterm
-        let term = new Terminal();
+        let term = new Terminal({
+          allowProposedApi: true
+        });
         term.prompt = () => {
             term.write('\r\n$');
         };

@@ -15,10 +15,10 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring-boot.version>2.7.3</spring-boot.version>
-        <spring-shell.version>2.1.0</spring-shell.version>
+        <spring-boot.version>2.7.9</spring-boot.version>
+        <spring-shell.version>2.1.7</spring-shell.version>
         <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
-        <junit5.version>5.9.1</junit5.version>
+        <junit5.version>5.9.2</junit5.version>
     </properties>
 
     <licenses>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>23.0.0</version>
+            <version>24.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.21.0</version>
+            <version>3.22.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -130,6 +130,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.32</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -155,7 +156,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.23.1</version>
+            <version>3.24.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

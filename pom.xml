@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mvnsearch</groupId>
     <artifactId>xtermjs-spring-boot-starter</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>xtermjs-spring-boot-starter</name>
     <description>Xterm.js for Spring Boot App</description>
@@ -15,10 +15,10 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring-boot.version>2.7.9</spring-boot.version>
-        <spring-shell.version>2.1.7</spring-shell.version>
-        <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
-        <junit5.version>5.9.2</junit5.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
+        <spring-shell.version>2.1.15</spring-shell.version>
+        <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
+        <junit5.version>5.10.1</junit5.version>
     </properties>
 
     <licenses>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>24.0.0</version>
+            <version>24.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -86,12 +86,12 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.22.0</version>
+            <version>3.25.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.15.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-            <version>2.4.0</version>
+            <version>2.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.zeroturnaround</groupId>
@@ -128,25 +128,14 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.32</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -156,7 +145,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.24.2</version>
+            <version>3.25.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -173,7 +162,7 @@
             <dependency>
                 <groupId>io.rsocket</groupId>
                 <artifactId>rsocket-bom</artifactId>
-                <version>1.1.3</version>
+                <version>1.1.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -194,7 +183,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <parameters>true</parameters>
                 </configuration>
@@ -236,7 +225,7 @@
             <plugin>
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
-                <version>0.0.34</version>
+                <version>0.0.40</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>

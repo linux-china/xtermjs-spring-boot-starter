@@ -28,8 +28,9 @@ public class XtermRSocketController extends XtermCommandHandler {
 	public Flux<String> shell(Flux<String> commands, RSocketRequester rsocketRequester) {
 		MutableContext mutableContext = new MutableContext();
 		mutableContext.put("path", new File(System.getProperty("user.home", ".")).getAbsolutePath());
-		return commands.filter(data -> !data.trim().isEmpty()).flatMap(this::executeCommand)
-				.subscriberContext(mutableContext::putAll);
+		return commands.filter(data -> !data.trim().isEmpty())
+			.flatMap(this::executeCommand)
+			.subscriberContext(mutableContext::putAll);
 	}
 
 	@GetMapping(value = "/xterm", produces = "text/html; charset=utf-8")

@@ -37,7 +37,8 @@ public class CurlCommand {
 	public static WebClient webClient = WebClient.builder().build();
 
 	public static WebClient webClientFollowRedirect = WebClient.builder()
-			.clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true))).build();
+		.clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)))
+		.build();
 
 	@ShellMethod("Curl command")
 	public Mono<String> curl(
@@ -123,7 +124,7 @@ public class CurlCommand {
 				}
 			}
 			requestBodySpec = (WebClient.RequestBodySpec) requestBodySpec
-					.body(BodyInserters.fromFormData(multiValueMap));
+				.body(BodyInserters.fromFormData(multiValueMap));
 		}
 		if (!StringUtils.isEmpty(user)) {
 			requestBodySpec.header("Authorization", "Basic " + Base64Utils.encodeToString(user.getBytes()));

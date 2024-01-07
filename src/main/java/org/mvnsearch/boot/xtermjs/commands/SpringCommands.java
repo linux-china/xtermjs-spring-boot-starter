@@ -301,9 +301,10 @@ public class SpringCommands implements CommandsSupport {
 	@ShellMethod("Display actuator")
 	public Mono<String> actuator(@ShellOption(help = "health component name", defaultValue = "") String endpoint) {
 		if (endpoint.isEmpty()) {
-			return Mono.just(endpointDiscoverer.getEndpoints().stream()
-					.map(exposableWebEndpoint -> exposableWebEndpoint.getEndpointId().toLowerCaseString())
-					.collect(Collectors.joining(",")));
+			return Mono.just(endpointDiscoverer.getEndpoints()
+				.stream()
+				.map(exposableWebEndpoint -> exposableWebEndpoint.getEndpointId().toLowerCaseString())
+				.collect(Collectors.joining(",")));
 		}
 		String serverPort = env.getProperty("server.port");
 		if (serverPort == null || serverPort.equals("-1")) {
@@ -311,14 +312,17 @@ public class SpringCommands implements CommandsSupport {
 		}
 		String managementPort = env.getProperty("management.server.port", serverPort);
 		String managementPath = env.getProperty("management.endpoints.web.base-path", "/actuator");
-		return CurlCommand.webClient.get().uri("http://127.0.0.1:" + managementPort + managementPath + "/" + endpoint)
-				.retrieve().bodyToMono(String.class);
+		return CurlCommand.webClient.get()
+			.uri("http://127.0.0.1:" + managementPort + managementPath + "/" + endpoint)
+			.retrieve()
+			.bodyToMono(String.class);
 	}
 
 	private static String meterName(String name, List<Tag> tags) {
 		if (tags != null && tags.size() > 0) {
-			return tags.stream().map(tag -> tag.getKey() + ":" + tag.getValue())
-					.collect(Collectors.joining(",", name + "(", ")"));
+			return tags.stream()
+				.map(tag -> tag.getKey() + ":" + tag.getValue())
+				.collect(Collectors.joining(",", name + "(", ")"));
 		}
 		return name;
 	}
@@ -327,8 +331,10 @@ public class SpringCommands implements CommandsSupport {
 		if (healthComponent instanceof Health) {
 			Map<String, Object> details = ((Health) healthComponent).getDetails();
 			if (details != null && !details.isEmpty()) {
-				return details.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue().toString())
-						.collect(Collectors.joining(",", name + "(", ")"));
+				return details.entrySet()
+					.stream()
+					.map(entry -> entry.getKey() + ":" + entry.getValue().toString())
+					.collect(Collectors.joining(",", name + "(", ")"));
 			}
 		}
 		return name;

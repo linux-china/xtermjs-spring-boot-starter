@@ -113,8 +113,11 @@ public class XtermCommandHandler {
 		return Mono.deferWithContext(context -> {
 			try {
 				List<String> command = lineParser.parse(commandLine, 0).words();
-				String output = new ProcessExecutor().directory(new File((String) context.get("path"))).command(command)
-						.readOutput(true).execute().outputUTF8();
+				String output = new ProcessExecutor().directory(new File((String) context.get("path")))
+					.command(command)
+					.readOutput(true)
+					.execute()
+					.outputUTF8();
 				return Mono.just(output.trim());
 			}
 			catch (Exception e) {

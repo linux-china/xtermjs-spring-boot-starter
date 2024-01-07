@@ -115,7 +115,7 @@ public class QueryResult {
 				int bytelen = cellValue.getBytes().length;
 				int charlen = cellValue.toCharArray().length;
 				rowBuilder
-						.append("| " + StringUtils.rightPad(cellValue, columnsWidth.get(i) + 1 - (bytelen - charlen)));
+					.append("| " + StringUtils.rightPad(cellValue, columnsWidth.get(i) + 1 - (bytelen - charlen)));
 			}
 			rowBuilder.append("|");
 			lines.add(rowBuilder.toString());
